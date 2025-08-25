@@ -4,7 +4,7 @@ import {reactive, ref} from "vue";
 import {User, Lock} from "@element-plus/icons-vue";
 import type {LoginForm} from "../type/LoginForm.ts";
 import {type FormInstance, type FormRules} from "element-plus";
-import {login} from "../api/oauth.ts";
+import {login} from "../api/oauthApi.ts";
 import {useRouter} from "vue-router";
 
 const router = useRouter()
@@ -28,7 +28,7 @@ function submitLogin(formEl: FormInstance | undefined) {
   formEl?.validate(valid => {
     if (valid) {
       login(loginForm).then(res => {
-        router.push({name: 'Home'})
+        router.push({name: 'Layout'})
       })
     }
   })
