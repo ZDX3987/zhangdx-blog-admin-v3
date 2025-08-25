@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {ArrowRight, Expand, Fold} from "@element-plus/icons-vue";
 import {type RouteRecord, useRoute} from "vue-router";
 
@@ -8,7 +8,14 @@ const route = useRoute()
 const menuCollapse = ref(false)
 const emit = defineEmits(['collapseMenu'])
 
-const routeList: RouteRecord[] = route.matched
+const routeList = ref<RouteRecord[]>([])
+
+watch(() => route.fullPath,
+    () => {
+      routeList.value = route.matched
+    },
+    {immediate: true}
+)
 
 function menuCollapseMenuCollapse() {
   menuCollapse.value = !menuCollapse.value
