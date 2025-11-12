@@ -8,5 +8,5 @@ export function getAdminMenu(): Promise<ApiResponse<MenuItem[]>> {
     let params = {
         menuType: 'ADMIN'
     }
-    return genApiResponse(axios.get(url + '/list', {params}))
+    return genApiResponse(axios.get(url + '/role-menu', {params}))
 }

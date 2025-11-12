@@ -94,17 +94,27 @@ function currentChange(changePage: number) {
   </div>
   <div class="article_list_table">
     <el-table :data="articleList">
-      <el-table-column label="序号" type="index"/>
-      <el-table-column label="标题" prop="title"/>
-      <el-table-column label="作者" prop="author.nickname"/>
-      <el-table-column label="状态" prop="status">
+      <el-table-column label="序号" type="index" align="center" width="80"/>
+      <el-table-column label="标题" prop="title" align="left" width="300"/>
+      <el-table-column label="作者" prop="author.nickname" align="center" width="180"/>
+      <el-table-column label="状态" prop="status" align="center" width="100">
         <template #default="scope">
           <el-tag  :type="status[scope.row.status].color">{{scope.row.status}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" prop="publishDate" :formatter="tableDateFormat" sortable></el-table-column>
-      <el-table-column label="更新时间" prop="updateDate" :formatter="tableDateFormat" sortable></el-table-column>
-      <el-table-column fixed="right" label="操作">
+      <el-table-column label="标签" align="center" width="300">
+        <template #default="scope">
+          <span v-if="scope.row.categories.length > 0"
+                v-for="(cate, index) in scope.row.categories">
+              <el-divider v-if="index !== 0" direction="vertical"></el-divider>
+              <span>{{cate.cateName}}</span>
+            </span>
+          <span v-else>/</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="发布时间" prop="publishDate" :formatter="tableDateFormat" sortable  align="center" width="180"></el-table-column>
+      <el-table-column label="更新时间" prop="updateDate" :formatter="tableDateFormat" sortable align="center" width="180"></el-table-column>
+      <el-table-column fixed="right" label="操作" align="center">
         <template #default="scope">
           <el-popconfirm v-if="status[scope.row.status].value === 2" title="该文章已经发布，需要撤回才能编辑，是否撤回"
                          @confirm="cancelPublish(scope.row)" width="200">
