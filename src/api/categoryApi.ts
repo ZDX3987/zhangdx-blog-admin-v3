@@ -12,3 +12,11 @@ export function getAllCategory(pageSize: number, current: number): Promise<ApiRe
     }
     return genApiResponse(axios.get(url + '/category-page', {params: params}));
 }
+
+export function updateCategory(category: CategoryItem): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.put(url + '/category', category));
+}
+
+export function delCategory(cateId: number): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.delete(url + '/category/' + cateId));
+}

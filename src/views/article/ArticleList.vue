@@ -1,11 +1,13 @@
 <script setup lang="ts">
 
 import {onMounted, reactive, ref} from "vue";
-import {delArticle, getArticlePage} from "../../api/articelApi.ts";
+import {delArticle, download, getArticlePage, toCheckArticle} from "../../api/articelApi.ts";
 import {ResultPage} from "../../type/ResultPage.ts";
 import {ArticleItem} from "../../type/ArticleItem.ts";
 import {dateFormat} from "../../utils/moment-date.ts";
-import {ElMessage} from "element-plus";
+import {ElMessage, type TableColumnCtx} from "element-plus";
+import {useRouter} from "vue-router";
+import {downloadMdFile} from "../../utils/file-util.ts";
 
 const status: any = {
   "已保存": {name: "已保存", value: 0, color: ""},
@@ -16,6 +18,10 @@ const status: any = {
 const articleTypeEnum:any = {
   "原创":{color:"success"},
   "转载":{color:"warning"},
+}
+const articleSourceEnum:any = {
+  1:{color:"warning", name: '富文本'},
+  2:{color:"success", name: 'Markdown'},
 }
 const articleQueryForm = reactive({
   authorName: '',
@@ -29,6 +35,8 @@ const resultPage = ref<ResultPage<ArticleItem>>()
 const pageSize = ref<number>(10)
 const currentPage = ref<number>(1)
 const querySort = ref<number>(2)
+
+const router = useRouter()
 
 onMounted(() => {
   queryArticle(currentPage.value, pageSize.value)
@@ -51,22 +59,36 @@ function queryArticle(queryPage: number, queryPageSize: number) {
         isLoading.value = false
       })
 }
-function cancelPublish(row) {
-
+function cancelPublish(row: ArticleItem) {
+  toCheckArticle(row.id, 1).then(() => {
+    ElMessage.success('取消审核成功')
+    router.push({name: 'PublishArticle', params: {operate: 'update', article: row}})
+  }).catch(() => ElMessage.error('取消审核失败'))
 }
-function editArticle(row) {
-
+function editArticle(row: ArticleItem) {
+  if (status[row.status].value === 2) {
+    ElMessage.warning('该文章已发布，不可直接编辑')
+    return
+  }
+  router.push({name: 'PublishArticle', params: {operate: 'update', article: row}})
 }
-function downloadArticle(row) {
-
+function downloadArticle(row: ArticleItem) {
+  if (row.source !== 2) {
+    ElMessage.warning('仅能下载Markdown格式的文章')
+    return
+  }
+  download(row.id).then(blob => {
+    downloadMdFile(blob, row.title + '.md')
+    ElMessage.success('下载成功')
+  })
 }
-function deleteArticle(row) {
+function deleteArticle(row: ArticleItem) {
   delArticle(row.id).then(() => {
     queryArticle(1, pageSize.value)
     ElMessage.success('删除成功')
   })
 }
-function tableDateFormat(row, column, cellValue) {
+function tableDateFormat(row: ArticleItem, column: TableColumnCtx<any>, cellValue: any) {
   return dateFormat(cellValue)
 }
 
@@ -125,6 +147,11 @@ function currentChange(changePage: number) {
           <span v-else>/</span>
         </template>
       </el-table-column>
+      <el-table-column label="存储格式" prop="source" align="center" width="120">
+        <template #default="scope">
+          <el-tag  :type="articleSourceEnum[scope.row.source].color" round effect="plain">{{articleSourceEnum[scope.row.source].name}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="发布时间" prop="publishDate" :formatter="tableDateFormat" sortable  align="center" width="180"></el-table-column>
       <el-table-column label="更新时间" prop="updateDate" :formatter="tableDateFormat" sortable align="center" width="180"></el-table-column>
       <el-table-column fixed="right" label="操作" align="center">
@@ -148,7 +175,7 @@ function currentChange(changePage: number) {
       </el-table-column>
     </el-table>
     <div class="article_list_pagination">
-      <el-pagination background layout="total, prev, pager, next, sizes, jumper" :current-page="currentPage" :size="pageSize"
+      <el-pagination background layout="total, prev, pager, next, sizes, jumper" :current-page="currentPage" :page-size="pageSize"
                      :total="resultPage?.total" :page-sizes="[5,10,15,30]" @size-change="sizeChange" @current-change="currentChange" />
     </div>
   </div>

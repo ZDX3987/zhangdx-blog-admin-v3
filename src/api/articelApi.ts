@@ -19,12 +19,18 @@ export function getArticlePage(pageSize: number, pageIndex: number, queryStatus:
     return genApiResponse(axios.post(url + '/articles', formData));
 }
 
-export function delArticle(articleId: number) {
-    return axios.delete(url + '/article/' + articleId);
+export function delArticle(articleId: number): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.delete(url + '/article/' + articleId));
 }
 
-export function download(articleId: number) {
+export function download(articleId: number): Promise<BlobPart> {
     return axios.get(url + '/download/' + articleId, {
         responseType: 'blob'
     });
+}
+
+export function toCheckArticle(id: number, toStatus: number): Promise<ApiResponse<any>> {
+    let formData = new FormData();
+    formData.append("toStatus", toStatus.toString());
+    return genApiResponse(axios.put(url + '/check-article/' + id, formData));
 }

@@ -4,5 +4,4 @@ export class CategoryItem {
     articleCount: number;
     parentCate: CategoryItem | null;
     status: number;
-
 }

@@ -66,13 +66,27 @@ const routes = [
             {
                 path: 'category',
                 name: 'CategoryManage',
+                component: () => import('../views/category/CategoryManage.vue'),
                 meta: {title: '标签管理'},
+                redirect: {name: 'CategoryList'},
                 children: [
                     {
                         path: 'list',
                         meta: {title: '标签列表'},
                         name: 'CategoryList',
                         component: () => import('../views/category/CategoryList.vue'),
+                    },
+                    {
+                        path: 'add',
+                        meta: {title: '新建标签'},
+                        name: 'CategoryAdd',
+                        component: () => import('../views/category/CategoryEdit.vue'),
+                    },
+                    {
+                        path: 'edit',
+                        meta: {title: '编辑标签'},
+                        name: 'CategoryEdit',
+                        component: () => import('../views/category/CategoryEdit.vue'),
                     }
                 ]
             }
