@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Bg from "../components/common/Bg.vue";
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {User, Lock} from "@element-plus/icons-vue";
 import type {LoginForm} from "../type/LoginForm.ts";
 import {type FormInstance, type FormRules} from "element-plus";
@@ -24,6 +24,18 @@ const loginType = [
   {type: 'FEISHU', icon: 'iconfont iconiconfeishuLOGO', color: 'rgb(76,114,252)', text: '飞书'}
 ]
 
+onMounted(() => {
+  enterLogin()
+})
+
+function enterLogin() {
+  document.onkeydown = e => {
+    if (e.keyCode === 13) {
+      submitLogin(loginFormRef.value);
+    }
+  }
+}
+
 function submitLogin(formEl: FormInstance | undefined) {
   formEl?.validate(valid => {
     if (valid) {
@@ -33,6 +45,7 @@ function submitLogin(formEl: FormInstance | undefined) {
     }
   })
 }
+
 </script>
 
 <template>
