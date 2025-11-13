@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-import {ArticleStatus} from "../../type/ArticleStatus.ts";
 import {onMounted, reactive, ref} from "vue";
 import {delArticle, getArticlePage} from "../../api/articelApi.ts";
 import {ResultPage} from "../../type/ResultPage.ts";
@@ -8,16 +7,19 @@ import {ArticleItem} from "../../type/ArticleItem.ts";
 import {dateFormat} from "../../utils/moment-date.ts";
 import {ElMessage} from "element-plus";
 
-const articleStatus = ArticleStatus
 const status: any = {
   "已保存": {name: "已保存", value: 0, color: ""},
   "待审核": {name: "待审核", value: 1, color: "warning"},
   "已发布": {name: "已发布", value: 2, color: "success"},
   "已删除": {name: "已删除", value: 3, color: "danger"}
 }
+const articleTypeEnum:any = {
+  "原创":{color:"success"},
+  "转载":{color:"warning"},
+}
 const articleQueryForm = reactive({
   authorName: '',
-  queryStatus: [0, 1, 2, 3],
+  queryStatus: [],
   queryDate: null
 })
 const isLoading = ref<boolean>(false)
@@ -34,7 +36,11 @@ onMounted(() => {
 
 function queryArticle(queryPage: number, queryPageSize: number) {
   isLoading.value = true
-  getArticlePage(queryPageSize, queryPage, articleQueryForm.queryStatus, querySort.value, articleQueryForm.queryDate)
+  let queryStatus = articleQueryForm.queryStatus
+  if (!queryStatus || queryStatus.length === 0) {
+    queryStatus = [0, 1, 2, 3];
+  }
+  getArticlePage(queryPageSize, queryPage, queryStatus, querySort.value, articleQueryForm.queryDate)
       .then(res => {
         let result = ResultPage.build<ArticleItem>(res.data, ArticleItem);
         articleList.value = result.records
@@ -80,15 +86,17 @@ function currentChange(changePage: number) {
         <el-input v-model="articleQueryForm.authorName" placeholder="请输入作者名字" clearable/>
       </el-form-item>
       <el-form-item label="文章状态">
-        <el-select v-model="articleQueryForm.queryStatus" placeholder="请选择文章状态" clearable>
-          <el-option v-for="(option, index) in articleStatus" :label="option" :value="index"/>
+        <el-select v-model="articleQueryForm.queryStatus" placeholder="请选择文章状态" clearable multiple
+                   collapse-tags collapse-tags-tooltip>
+          <el-option v-for="option in status" :label="option.name" :value="option.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="发布时间">
-        <el-date-picker v-model="articleQueryForm.queryDate" type="daterange"/>
+        <el-date-picker v-model="articleQueryForm.queryDate" type="daterange" range-separator="至" value-format="YYYY-MM-DD"
+          start-placeholder="开始日期" end-placeholder="结束日期"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="queryArticle(currentPage, pageSize)">查询</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -100,6 +108,11 @@ function currentChange(changePage: number) {
       <el-table-column label="状态" prop="status" align="center" width="100">
         <template #default="scope">
           <el-tag  :type="status[scope.row.status].color">{{scope.row.status}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="来源" prop="articleType" align="center" width="100">
+        <template #default="scope">
+          <el-tag  :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{scope.row.articleType}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="标签" align="center" width="300">
@@ -146,8 +159,17 @@ function currentChange(changePage: number) {
 .article_list_content {
   background-color: #FFF;
   padding: 20px;
+  height: 90vh;
 }
 .article_list_pagination {
   margin-top: 20px;
+}
+/*修复elementplus的bug*/
+.el-form--inline {
+  .el-form-item {
+    .el-input, .el-cascader, .el-select, .el-autocomplete {
+      width: 150px;
+    }
+  }
 }
 </style>

@@ -32,7 +32,7 @@ function initAdminMenu() {
              active-text-color="#409eff"
              class="menu_list">
       <template v-for="(menu, index) in menuList" :key="menu.id">
-        <RouterLink  v-if="menu.childrenMenu.length === 0" :index="index + 1 + ''" :to="{name: menu.componentName}">
+        <RouterLink  v-if="menu.childrenMenu.length === 0" :index="index + 1 + ''" :to="{path: menu.router}">
           <el-menu-item>
             <el-icon v-if="menu.iconClass" :class="menu.iconClass"></el-icon>
             <template #title>{{menu.text}}</template>
@@ -45,7 +45,7 @@ function initAdminMenu() {
           </template>
           <el-menu-item-group>
             <el-menu-item  v-for="(child, innerIndex) in menu.childrenMenu" :index="index + 1 + '_' + innerIndex + 1">
-              <RouterLink :to="{name: child.componentName}">{{child.text}}</RouterLink>
+              <RouterLink :to="{path: child.router}">{{child.text}}</RouterLink>
             </el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
