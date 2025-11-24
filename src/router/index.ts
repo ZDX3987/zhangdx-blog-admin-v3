@@ -89,6 +89,27 @@ const routes = [
                         component: () => import('../views/category/CategoryEdit.vue'),
                     }
                 ]
+            },
+            {
+                path: 'categoryView',
+                name: 'CategoryViewManage',
+                component: () => import('../views/category/CategoryView.vue'),
+                meta: {title: '标签分类视图管理'},
+                redirect: {name: 'CategoryViewList'},
+                children: [
+                    {
+                        path: 'list',
+                        name: 'CategoryViewList',
+                        component: () => import('../views/category/CategoryViewList.vue'),
+                        meta: {title: '视图列表'},
+                    },
+                    {
+                        path: 'add',
+                        name: 'CategoryViewAdd',
+                        component: () => import('../views/category/CategoryViewEdit.vue'),
+                        meta: {title: '新增视图'},
+                    }
+                ]
             }
         ]
     }
