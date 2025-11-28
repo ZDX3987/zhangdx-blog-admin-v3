@@ -19,7 +19,7 @@ const routes = [
         redirect: {name: 'Home'},
         children: [
             {
-                path: '/home',
+                path: '/index',
                 name: 'Home',
                 component: () => import('../views/Home.vue'),
                 meta: {title: '首页'}
@@ -108,6 +108,21 @@ const routes = [
                         name: 'CategoryViewAdd',
                         component: () => import('../views/category/CategoryViewEdit.vue'),
                         meta: {title: '新增视图'},
+                    }
+                ]
+            },
+            {
+                path: 'systemPermissionManage',
+                name: 'PermissionManage',
+                component: () => import('../views/permission/PermissionManage.vue'),
+                meta: {title: '系统权限管理'},
+                redirect: {name: 'PermissionList'},
+                children: [
+                    {
+                        path: 'list',
+                        name: 'PermissionList',
+                        component: () => import('../views/permission/PermissionList.vue'),
+                        meta: {title: '权限列表'},
                     }
                 ]
             }
