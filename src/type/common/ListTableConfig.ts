@@ -1,0 +1,114 @@
+import type {ApiResponse} from "../../api/axios.ts";
+import type {ResultPage} from "../ResultPage.ts";
+
+export class ListTableDataMapping {
+    prop: string;
+    label: string;
+    width: number;
+    isIndex: boolean;
+    datePattern: string;
+    isDate: boolean;
+    slotTemplates: SlotType;
+    align: string;
+    fixed: string;
+
+
+    public static defineIndexColumn(label?: string, width?: number): ListTableDataMapping {
+        let mapping = new ListTableDataMapping()
+        mapping.isIndex = true
+        mapping.label = label || '序号'
+        mapping.width = width || 80
+        mapping.align = 'center'
+        return mapping
+    }
+
+    public static defineCommonColumn(prop: string, label: string, width?: number, align?: string): ListTableDataMapping {
+        let mapping = new ListTableDataMapping()
+        mapping.prop = prop
+        mapping.label = label
+        mapping.width = width || 120
+        mapping.align = align || 'center'
+        return mapping
+    }
+
+    public static defineDateColumn(prop: string, label: string, width?: number, datePattern?: string): ListTableDataMapping {
+        let mapping = new ListTableDataMapping()
+        mapping.prop = prop
+        mapping.label = label
+        mapping.width = width || 120
+        mapping.isDate = true
+        mapping.datePattern = datePattern || 'yyyy-MM-DD HH:mm:ss'
+        mapping.align = 'center'
+        return mapping
+    }
+
+    public static defineRightOperator(label: string, align?: string): ListTableDataMapping {
+        let mapping = new ListTableDataMapping()
+        mapping.label = label
+        mapping.fixed = 'right'
+        mapping.align = align || 'center'
+        return mapping
+    }
+
+    public addSlotTemplate(defaultName: string, headerName?: string): ListTableDataMapping {
+        this.slotTemplates = new SlotType(defaultName, headerName)
+        return this
+    }
+
+}
+
+class SlotType {
+    default: string;
+    header: string;
+
+    constructor(defaultName: string, headerName: string) {
+        this.default = defaultName
+        this.header = headerName
+    }
+}
+
+export class DeleteConfig {
+    deleteFunc: (id: number) => Promise<ApiResponse<any>>;
+}
+
+export class EditConfig {
+    editFunc: (id: number) => void;
+
+    constructor(editFunc?: Function) {
+        this.editFunc = editFunc
+    }
+}
+
+export class PagerConfig {
+    pageSizes: number[];
+    layout: string[];
+    defaultPageSize: number = 15;
+
+    constructor() {
+        this.pageSizes = [5, 10, 15, 30, 50, 100]
+        this.layout = ['total', 'prev', 'pager', 'next', 'sizes', 'jumper']
+    }
+
+}
+
+export class QueryConfig {
+    queryFunc: (currentPage: number, pageSize: number) => Promise<ApiResponse<ResultPage<any>>>;
+}
+
+export class ListTableConfig {
+    deleteConfig: DeleteConfig;
+    pagerConfig: PagerConfig;
+    editConfig: EditConfig;
+    tableMappings: ListTableDataMapping[] = [];
+    queryConfig: QueryConfig;
+
+    public constructor() {
+        this.tableMappings = []
+        this.pagerConfig = new PagerConfig()
+        this.queryConfig = new QueryConfig()
+    }
+
+    public needShowOperator(): boolean {
+        return this.deleteConfig !== undefined || this.editConfig !== undefined
+    }
+}

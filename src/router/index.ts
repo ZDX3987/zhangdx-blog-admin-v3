@@ -153,6 +153,33 @@ const routes = [
                     }
                 ]
             },
+            {
+                path: 'settings/update-Log',
+                name: 'UpdateLogManage',
+                component: () => import('../views/updatelog/UpdateLogManage.vue'),
+                meta: {title: '更新日志'},
+                redirect: {name: 'ContentList'},
+                children: [
+                    {
+                        path: 'list',
+                        name: 'UpdateLogList',
+                        component: () => import('../views/updatelog/UpdateLogList.vue'),
+                        meta: {title: '日志列表'},
+                    },
+                    {
+                        path: 'add',
+                        name: 'UpdateLogAdd',
+                        component: () => import('../views/updatelog/UpdateLogEdit.vue'),
+                        meta: {title: '新增日志'},
+                    },
+                    {
+                        path: 'edit/:logId',
+                        name: 'UpdateLogEdit',
+                        component: () => import('../views/updatelog/UpdateLogEdit.vue'),
+                        meta: {title: '编辑日志'},
+                    }
+                ]
+            },
         ]
     }
 ]
