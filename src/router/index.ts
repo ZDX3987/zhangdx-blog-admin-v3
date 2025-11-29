@@ -125,7 +125,34 @@ const routes = [
                         meta: {title: '权限列表'},
                     }
                 ]
-            }
+            },
+            {
+                path: 'content',
+                name: 'ContentManage',
+                component: () => import('../views/content/ContentManage.vue'),
+                meta: {title: '内容管理'},
+                redirect: {name: 'ContentList'},
+                children: [
+                    {
+                        path: 'list',
+                        name: 'ContentList',
+                        component: () => import('../views/content/ContentList.vue'),
+                        meta: {title: '内容列表'},
+                    },
+                    {
+                        path: 'add',
+                        name: 'ContentAdd',
+                        component: () => import('../views/content/ContentEdit.vue'),
+                        meta: {title: '新增内容'},
+                    },
+                    {
+                        path: 'edit/:contentId',
+                        name: 'ContentEdit',
+                        component: () => import('../views/content/ContentEdit.vue'),
+                        meta: {title: '编辑内容'},
+                    }
+                ]
+            },
         ]
     }
 ]
