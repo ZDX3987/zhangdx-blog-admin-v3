@@ -69,6 +69,10 @@ class SlotType {
 
 export class DeleteConfig {
     deleteFunc: (id: number) => Promise<ApiResponse<any>>;
+
+    constructor(deleteFunc: Function) {
+        this.deleteFunc = deleteFunc
+    }
 }
 
 export class EditConfig {
@@ -95,12 +99,25 @@ export class QueryConfig {
     queryFunc: (currentPage: number, pageSize: number) => Promise<ApiResponse<ResultPage<any>>>;
 }
 
+export class AddConfig {
+    showAddBtn: boolean;
+    addBtnText: string;
+    addFunc: (id: number) => void;
+
+    constructor(addBtnText?: string, addFunc: Function) {
+        this.showAddBtn = true
+        this.addBtnText = addBtnText
+        this.addFunc = addFunc
+    }
+}
+
 export class ListTableConfig {
     deleteConfig: DeleteConfig;
     pagerConfig: PagerConfig;
     editConfig: EditConfig;
     tableMappings: ListTableDataMapping[] = [];
     queryConfig: QueryConfig;
+    addConfig: AddConfig;
 
     public constructor() {
         this.tableMappings = []

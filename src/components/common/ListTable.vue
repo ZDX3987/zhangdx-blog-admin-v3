@@ -73,6 +73,11 @@ function doDelete(row: any) {
   }).catch(() => ElMessage.error('删除失败'))
 }
 
+function doAdd() {
+  let addFunc = props.listTableConfig?.addConfig.addFunc
+  addFunc()
+}
+
 function sizeChange(changePageSize: number) {
   queryTableData(currentPage.value, changePageSize)
 }
@@ -85,6 +90,11 @@ function currentChange(changePage: number) {
 
 <template>
 <div class="list_table_wrapper" v-if="listTableConfig">
+  <div class="list_table_header" v-if="listTableConfig.addConfig">
+    <el-button-group class="btn-group" v-if="listTableConfig.addConfig.showAddBtn">
+      <el-button type="primary" @click="doAdd">{{listTableConfig.addConfig.addBtnText}}</el-button>
+    </el-button-group>
+  </div>
   <div class="list_table_table">
     <el-table :data="tableData">
       <el-table-column v-for="mapping in listTableConfig.tableMappings" :key="mapping" :prop="mapping.prop" :label="mapping.label"

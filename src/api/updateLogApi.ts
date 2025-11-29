@@ -13,3 +13,7 @@ export function getUpdateLogPage(currentPage: number, pageSize: number): Promise
     }
     return genApiResponse(axios.get(url + '/page', {params:params}));
 }
+
+export function deleteUpdateLog(id: number): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.delete('/update-log/' + id))
+}
