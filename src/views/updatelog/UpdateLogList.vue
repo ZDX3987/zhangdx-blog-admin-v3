@@ -17,7 +17,7 @@ const router = useRouter()
 
 onMounted(() => {
   let config: ListTableConfig = new ListTableConfig()
-  config.queryConfig.queryFunc = (currentPage, pageSize) => queryUpdateLog(currentPage, pageSize)
+  config.queryConfig.queryFunc = (currentPage, pageSize) => getUpdateLogPage(currentPage, pageSize)
   config.tableMappings = [
       ListTableDataMapping.defineIndexColumn(),
       ListTableDataMapping.defineCommonColumn('title', '标题', 300, 'left'),
@@ -30,10 +30,6 @@ onMounted(() => {
   })
   listTableConfig.value = config
 })
-
-async function queryUpdateLog(currentPage: number, pageSize: number) {
-  return await getUpdateLogPage(currentPage, pageSize);
-}
 
 </script>
 
