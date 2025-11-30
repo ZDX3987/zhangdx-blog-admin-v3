@@ -70,6 +70,7 @@ function doDelete(row: any) {
   let deleteFunc = props.listTableConfig.deleteConfig.deleteFunc
   deleteFunc(id).then(res => {
     ElMessage.success('删除成功')
+    queryTableData(1, pageSize.value)
   }).catch(() => ElMessage.error('删除失败'))
 }
 

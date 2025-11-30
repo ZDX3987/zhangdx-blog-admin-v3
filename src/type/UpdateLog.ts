@@ -3,5 +3,5 @@ export class UpdateLog {
     title: string;
     updateDate: Date;
     status: number;
-    content: string;
+    content: string | undefined;
 }

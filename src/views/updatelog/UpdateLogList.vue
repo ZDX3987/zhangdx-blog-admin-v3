@@ -9,16 +9,11 @@ import {
   ListTableConfig,
   ListTableDataMapping
 } from "../../type/common/ListTableConfig.ts";
-import {getUpdateLogPage} from "../../api/updateLogApi.ts";
+import {deleteUpdateLog, getUpdateLogPage} from "../../api/updateLogApi.ts";
 import {useRouter} from "vue-router";
+import {updateLogStatus} from "../../type/common/commonStatusConst.ts";
 
 const listTableConfig = ref<ListTableConfig>(new ListTableConfig())
-const status: any = [
-  {name: "已废弃", value: 0, color: "info"},
-  {name: "已规划", value: 1, color: "primary"},
-  {name: "测试中", value: 2, color: "warning"},
-  {name: "已上线", value: 3, color: "success"}
-]
 const router = useRouter()
 
 onMounted(() => {
@@ -50,7 +45,7 @@ function defineListTableConfig() {
 <div>
   <ListTable :listTableConfig="listTableConfig">
     <template #statusSlot="scope">
-      <el-tag :type="status[scope.row.status].color">{{status[scope.row.status].name}}</el-tag>
+      <el-tag :type="updateLogStatus[scope.row.status].color">{{updateLogStatus[scope.row.status].name}}</el-tag>
     </template>
   </ListTable>
 </div>

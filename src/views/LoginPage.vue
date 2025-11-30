@@ -50,7 +50,7 @@ function submitLogin(formEl: FormInstance | undefined) {
 
 <template>
   <el-row type="flex" justify="center">
-    <el-col :span="12">
+    <el-col :xl="10" :md="12">
       <div class="login_content">
         <h2 class="login_title">登录</h2>
         <div class="login_form_content">
