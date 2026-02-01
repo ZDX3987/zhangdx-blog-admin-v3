@@ -2,6 +2,7 @@ import {genApiResponse} from "../utils/api-util.ts";
 import axios, {type ApiResponse} from "./axios.ts";
 import type {ResultPage} from "../type/ResultPage.ts";
 import {Permission} from "../type/Permission.ts";
+import {PermissionForm} from "../type/PermissionForm.ts";
 
 const url = '/api/permission'
 
@@ -18,4 +19,15 @@ export function deletePermission(permissionId: number): Promise<ApiResponse<any>
         permissionId: permissionId
     }
     return genApiResponse(axios.delete(url, {params}))
+}
+
+export function getPermission(permissionId: number): Promise<ApiResponse<PermissionForm>> {
+    let params = {
+        permissionId: permissionId
+    }
+    return genApiResponse(axios.get(url, {params}))
+}
+
+export function doSavePermission(permissionForm: PermissionForm): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.post(url, permissionForm))
 }

@@ -3,7 +3,13 @@
 import {onMounted, ref} from "vue";
 import {deletePermission, getPermissionPages} from "../../api/permissionApi.ts";
 import ListTable from "../../components/common/ListTable.vue";
-import {DeleteConfig, EditConfig, ListTableConfig, ListTableDataMapping} from "../../type/common/ListTableConfig.ts";
+import {
+  AddConfig,
+  DeleteConfig,
+  EditConfig,
+  ListTableConfig,
+  ListTableDataMapping
+} from "../../type/common/ListTableConfig.ts";
 import {useRouter} from "vue-router";
 
 const router = useRouter()
@@ -15,6 +21,7 @@ onMounted(() => {
 
 function defineListTableConfig(): ListTableConfig {
   const config: ListTableConfig = new ListTableConfig()
+  config.addConfig = new AddConfig('新建权限', () => router.push({name: 'PermissionAdd'}))
   config.queryConfig.queryFunc = (currentPage, pageSize) => getPermissionPages(currentPage, pageSize)
   config.tableMappings = [
     ListTableDataMapping.defineIndexColumn(),
