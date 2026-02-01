@@ -59,7 +59,11 @@ function doEdit(row: any) {
     return
   }
   let editFunc = props.listTableConfig?.editConfig.editFunc
-  editFunc(id)
+  try {
+    editFunc(id)
+  } catch (error) {
+    ElMessage.error('' + error)
+  }
 }
 
 function doDelete(row: any) {
@@ -71,7 +75,7 @@ function doDelete(row: any) {
   deleteFunc(id).then(res => {
     ElMessage.success('删除成功')
     queryTableData(1, pageSize.value)
-  }).catch(() => ElMessage.error('删除失败'))
+  }).catch(error => ElMessage.error('删除失败：' + error))
 }
 
 function doAdd() {

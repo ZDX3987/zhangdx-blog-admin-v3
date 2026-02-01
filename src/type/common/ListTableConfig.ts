@@ -1,5 +1,6 @@
 import type {ApiResponse} from "../../api/axios.ts";
 import type {ResultPage} from "../ResultPage.ts";
+import {ElMessage} from "element-plus";
 
 export class ListTableDataMapping {
     prop: string;
@@ -71,7 +72,13 @@ export class DeleteConfig {
     deleteFunc: (id: number) => Promise<ApiResponse<any>>;
 
     constructor(deleteFunc: Function) {
-        this.deleteFunc = deleteFunc
+        this.deleteFunc = (id) => {
+            if (deleteFunc) {
+                return deleteFunc(id)
+            } else {
+                return Promise.reject('删除功能未实现');
+            }
+        }
     }
 }
 
@@ -79,7 +86,13 @@ export class EditConfig {
     editFunc: (id: number) => void;
 
     constructor(editFunc?: Function) {
-        this.editFunc = editFunc
+        this.editFunc = (id) => {
+            if (editFunc) {
+                editFunc(id)
+            } else {
+                throw new Error('编辑功能未实现')
+            }
+        }
     }
 }
 

@@ -123,6 +123,18 @@ const routes = [
                         name: 'PermissionList',
                         component: () => import('../views/permission/PermissionList.vue'),
                         meta: {title: '权限列表'},
+                    },
+                    {
+                        path: 'edit/:permissionId',
+                        name: 'PermissionEdit',
+                        component: () => import('../views/permission/PermissionEdit.vue'),
+                        meta: {title: '编辑权限'},
+                    },
+                    {
+                        path: 'add',
+                        name: 'PermissionAdd',
+                        component: () => import('../views/permission/PermissionEdit.vue'),
+                        meta: {title: '新增权限'},
                     }
                 ]
             },

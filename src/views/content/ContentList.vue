@@ -13,7 +13,7 @@ onMounted(() => {
   listTableConfig.value = defineListTableConfig()
 })
 
-function defineListTableConfig() {
+function defineListTableConfig(): ListTableConfig {
   let config: ListTableConfig = new ListTableConfig()
   config.queryConfig.queryFunc = (currentPage, pageSize) => getContentPage(currentPage, pageSize)
   config.tableMappings = [
