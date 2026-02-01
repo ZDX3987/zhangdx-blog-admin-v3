@@ -12,3 +12,10 @@ export function getPermissionPages(current: number, pageSize: number): Promise<A
     }
     return genApiResponse(axios.get(url + '/pages', {params}))
 }
+
+export function deletePermission(permissionId: number): Promise<ApiResponse<any>> {
+    let params = {
+        permissionId: permissionId
+    }
+    return genApiResponse(axios.delete(url, {params}))
+}

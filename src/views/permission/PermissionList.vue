@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import {getPermissionPages} from "../../api/permissionApi.ts";
+import {deletePermission, getPermissionPages} from "../../api/permissionApi.ts";
 import ListTable from "../../components/common/ListTable.vue";
 import {DeleteConfig, EditConfig, ListTableConfig, ListTableDataMapping} from "../../type/common/ListTableConfig.ts";
 import {useRouter} from "vue-router";
@@ -27,7 +27,7 @@ function defineListTableConfig(): ListTableConfig {
     ListTableDataMapping.defineDateColumn('createdAt', '创建时间', 180),
     ListTableDataMapping.defineDateColumn('updatedAt', '更新时间', 180)
   ]
-  config.deleteConfig = new DeleteConfig()
+  config.deleteConfig = new DeleteConfig(id => deletePermission(id))
   config.editConfig = new EditConfig(id => {
     router.push({name: 'PermissionEdit', params: {permissionId: id}})
   })
