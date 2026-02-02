@@ -23,8 +23,8 @@ function defineListTableConfig(): ListTableConfig {
     ListTableDataMapping.defineCommonColumn('router', '路由', 300, 'left'),
     ListTableDataMapping.defineDateColumn('updateDate', '更新时间', 180)
   ]
-  config.deleteConfig = new DeleteConfig(id => deleteContentApi(id))
-  config.editConfig = new EditConfig(id => {
+  config.deleteConfig = new DeleteConfig((id: number) => deleteContentApi(id))
+  config.editConfig = new EditConfig((id: number) => {
     router.push({name: 'ContentEdit', params: {contentId: id}})
   })
   return config;

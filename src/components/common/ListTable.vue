@@ -71,13 +71,15 @@ function doDelete(row: any) {
   if (id === undefined) {
     return
   }
-  let deleteFunc = props.listTableConfig.deleteConfig.deleteFunc
-  deleteFunc(id).then(res => {
-    ElMessage.success('删除成功')
-    queryTableData(1, pageSize.value)
-  }).catch(error => {
-    ElMessage.error(error)
-  })
+  let deleteFunc = props.listTableConfig?.deleteConfig.deleteFunc
+  if (deleteFunc) {
+    deleteFunc(id).then(() => {
+      ElMessage.success('删除成功')
+      queryTableData(1, pageSize.value)
+    }).catch(error => {
+      ElMessage.error(error)
+    })
+  }
 }
 
 function doAdd() {
@@ -113,12 +115,12 @@ function currentChange(changePage: number) {
       </el-table-column>
       <el-table-column v-if="listTableConfig.needShowOperator()" label="操作" fixed="right" align="center">
         <template #default="scope">
-          <el-button v-if="listTableConfig.editConfig" type="primary" @click="doEdit(scope.row)">修改</el-button>
+          <el-button v-if="listTableConfig.editConfig" type="primary" @click="doEdit(scope.row)">编辑</el-button>
           <el-popconfirm v-if="listTableConfig.deleteConfig"  width="200"
-                         title="确定删除吗？"
+                         :title="listTableConfig.deleteConfig.delConfirmText"
                          @confirm="doDelete(scope.row)">
             <template #reference>
-              <el-button type="danger">删除</el-button>
+              <el-button type="danger">{{listTableConfig.deleteConfig.delBtnText}}</el-button>
             </template>
           </el-popconfirm>
         </template>

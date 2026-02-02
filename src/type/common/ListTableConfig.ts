@@ -70,14 +70,22 @@ class SlotType {
 
 export class DeleteConfig {
     deleteFunc: (id: number) => Promise<ApiResponse<any>>;
+    delBtnText: string = '删除';
+    delConfirmText: string = '确定删除吗？';
 
-    constructor(deleteFunc: Function) {
+    constructor(deleteFunc: Function, delBtnText?: string, delConfirmText?: string) {
         this.deleteFunc = (id) => {
             if (deleteFunc) {
                 return deleteFunc(id)
             } else {
                 return Promise.reject('删除功能未实现');
             }
+        }
+        if (delBtnText) {
+            this.delBtnText = delBtnText
+        }
+        if (delConfirmText) {
+            this.delConfirmText = delConfirmText
         }
     }
 }
@@ -115,7 +123,7 @@ export class QueryConfig {
 export class AddConfig {
     showAddBtn: boolean;
     addBtnText: string;
-    addFunc: (id: number) => void;
+    addFunc: () => void;
 
     constructor(addBtnText?: string, addFunc: Function) {
         this.showAddBtn = true

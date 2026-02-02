@@ -1,5 +1,26 @@
 export  default [
     {
+        path: 'settings/sys-user',
+        name: 'SysUserManage',
+        component: () => import('../views/sysuser/SysUserManage.vue'),
+        meta: {title: '系统用户管理'},
+        redirect: {name: 'SysUserList'},
+        children: [
+            {
+                path: 'list',
+                name: 'SysUserList',
+                component: () => import('../views/sysuser/SysUserList.vue'),
+                meta: {title: '用户列表'},
+            },
+            {
+                path: 'edit/:sysUserId',
+                name: 'SysUserEdit',
+                component: () => import('../views/sysuser/SysUserEdit.vue'),
+                meta: {title: '编辑用户'},
+            },
+        ]
+    },
+    {
         path: 'systemPermissionManage',
         name: 'PermissionManage',
         component: () => import('../views/permission/PermissionManage.vue'),
