@@ -39,7 +39,7 @@ function definePermissionEditFormConfig(formValue: PermissionForm): EditFormConf
     ]).setPlaceholder('请选择权限资源类型').addRule({ required: true, message: '请选择资源类型', trigger: 'blur' }),
     EditFormItem.defineSwitchItem('状态', 'status')
   ]
-  formConfig.submitConfig = new SubmitConfig('保存', savePermission)
+  formConfig.submitConfig = new SubmitConfig(savePermission, '保存')
   formConfig.resettable = true
   formConfig.formValue = formValue
   formConfig.wrapperWidthPercent = 30

@@ -2,13 +2,11 @@ import type {ApiResponse} from "../../api/axios.ts";
 import type {FormItemRule} from "element-plus";
 
 export class EditFormItem {
-    label: string;
-    model: string;
-    placeholder: string;
-    type: FormItemType;
-    width: number;
-    options: FormOption[];
-    switchValue: number[];
+    label: string = '';
+    model: string = '';
+    placeholder: string = '';
+    type: FormItemType = FormItemType.Input;
+    width: number | undefined;
     rules: FormItemRule[] = [];
 
 
@@ -23,8 +21,7 @@ export class EditFormItem {
     }
 
     public static defineSelectItem(label: string, model: string, options: FormOption[]): EditFormItem {
-        const item = new EditFormItem()
-        item.type = FormItemType.Select
+        const item = new SelectFormItem()
         item.label = label
         item.model = model
         item.options = options
@@ -32,11 +29,23 @@ export class EditFormItem {
     }
 
     public static defineSwitchItem(label: string, model: string): EditFormItem {
-        const item = new EditFormItem()
-        item.type = FormItemType.Switch
+        const item = new SwitchFormItem()
         item.label = label
         item.model = model
-        item.switchValue = [0,1]
+        return item
+    }
+
+    public static defineTransferItem(label: string, data: any[], model: string, title?: string[], buttonText?: string[]): TransferFormItem {
+        const item = new TransferFormItem()
+        item.label = label
+        item.data = data
+        item.model = model
+        if (title) {
+            item.title = title
+        }
+        if (buttonText) {
+            item.buttonText = buttonText
+        }
         return item
     }
 
@@ -55,32 +64,66 @@ export class EditFormItem {
         this.rules.push(...rules)
         return this
     }
+
+    public isSelect(): this is SelectFormItem {
+        return this.type === FormItemType.Select && (this instanceof SelectFormItem)
+    }
+    public isSwitch(): this is SwitchFormItem {
+        return this.type === FormItemType.Switch && (this instanceof SwitchFormItem)
+    }
+    public isTransfer(): this is TransferFormItem {
+        return this.type === FormItemType.Transfer && (this instanceof TransferFormItem)
+    }
 }
+class SelectFormItem extends EditFormItem {
+    options: FormOption[] = [];
+    constructor() {
+        super();
+        this.type = FormItemType.Select
+    }
+}
+class SwitchFormItem extends EditFormItem {
+    switchValue: number[] = [0,1];
+    constructor() {
+        super();
+        this.type = FormItemType.Switch
+    }
+}
+class TransferFormItem extends EditFormItem {
+    data: any[] = [];
+    title: string[] = []
+    buttonText: string[] = []
+    constructor() {
+        super();
+        this.type = FormItemType.Transfer
+    }
+}
+
 
 export class SubmitConfig {
     btnText: string;
     submitFunc: (formValue: any) => Promise<ApiResponse<any>>;
     type: string;
 
-    public constructor(btnText?: string, submitFunc: Function) {
+    public constructor(submitFunc: Function, btnText?: string) {
         this.btnText = btnText || '提交'
         this.type = 'primary'
+        // @ts-ignore
         this.submitFunc = submitFunc
     }
 }
 
 export class EditFormConfig {
     formItems: EditFormItem[];
-    submitConfig: SubmitConfig;
+    submitConfig: SubmitConfig | undefined;
     resettable: boolean;
     formValue: any;
     wrapperWidthPercent: number;
-    validatable: boolean;
+    validatable: boolean = false;
     rules: any;
 
     public constructor() {
         this.formItems = []
-        this.submitConfig = new SubmitConfig()
         this.resettable = true
         this.wrapperWidthPercent = 50
     }
@@ -88,6 +131,7 @@ export class EditFormConfig {
     public openValidate(): EditFormConfig {
         this.validatable = true
         let ruleObj: any = {}
+        // @ts-ignore
         this.formItems.forEach(item => ruleObj[item.model] = item.rules)
         this.rules = ruleObj
         return this
@@ -95,9 +139,21 @@ export class EditFormConfig {
 
 }
 
+// @ts-ignore
 export enum FormItemType {
-    Password, Input, Checkbox,  Radio, Select, Switch, Button,  Upload,  InputNumber, InputTag,
-    DatePicker, DateTimePicker,
+    Password,
+    Input,
+    Checkbox,
+    Radio,
+    Select,
+    Switch,
+    Button,
+    Upload,
+    InputNumber,
+    InputTag,
+    DatePicker,
+    DateTimePicker,
+    Transfer
 }
 
 export class FormOption {

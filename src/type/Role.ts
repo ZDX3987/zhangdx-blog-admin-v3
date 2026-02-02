@@ -5,4 +5,5 @@ export class Role {
     status: number;
     createdAt: Date;
     updatedAt: Date;
+    permissionIdList: number[];
 }

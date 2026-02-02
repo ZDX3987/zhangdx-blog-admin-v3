@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {EditFormConfig, FormItemType} from "../../type/common/EditFormConfig.ts";
+import {EditFormConfig, EditFormItem, FormItemType} from "../../type/common/EditFormConfig.ts";
 import {ref, watch} from "vue";
 import type {FormInstance} from "element-plus";
 
@@ -25,7 +25,7 @@ function submitForm() {
   let submitFunc = submitConfig?.submitFunc
   if (validatable) {
     formRef.value?.validate(valid => {
-      if (valid) {
+      if (valid && submitFunc) {
         submitFunc(realFormValue.value)
       }
     })
@@ -43,15 +43,18 @@ function resetForm() {
   <el-form :model="realFormValue" label-width="auto" ref="formRef" :rules="editFormConfig?.rules">
     <el-form-item v-for="formItem in editFormConfig?.formItems" :key="formItem" :label="formItem.label" :prop="formItem.model">
       <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
-
       </el-input>
-      <el-select v-else-if="formItem.type === FormItemType.Select" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
+      <el-select v-else-if="formItem.isSelect()" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
         <el-option v-for="option in formItem.options" :key="option.value" :label="option.label" :value="option.value">
         </el-option>
       </el-select>
-      <el-switch v-else-if="formItem.type === FormItemType.Switch" v-model="realFormValue[formItem.model]"
+      <el-switch v-else-if="formItem.isSwitch()" v-model="realFormValue[formItem.model]"
                  :inactive-value="formItem.switchValue[0]" :active-value="formItem.switchValue[1]">
       </el-switch>
+      <el-transfer v-else-if="formItem.isTransfer()" :data="formItem.data" v-model="realFormValue[formItem.model]"
+        :titles="formItem.title" :button-texts="formItem.buttonText">
+
+      </el-transfer>
     </el-form-item>
     <el-form-item>
       <el-button v-if="editFormConfig?.submitConfig" :type="editFormConfig?.submitConfig.type" @click="submitForm">
