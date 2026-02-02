@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import {deletePermission, getPermissionPages} from "../../api/permissionApi.ts";
+import {deletePermission, doSavePermission, getPermissionPages} from "../../api/permissionApi.ts";
 import ListTable from "../../components/common/ListTable.vue";
 import {
   AddConfig,
@@ -11,6 +11,9 @@ import {
   ListTableDataMapping
 } from "../../type/common/ListTableConfig.ts";
 import {useRouter} from "vue-router";
+import type {Role} from "../../type/Role.ts";
+import {ElMessage} from "element-plus";
+import type {Permission} from "../../type/Permission.ts";
 
 const router = useRouter()
 const permissionTableConfig = ref<ListTableConfig>(new ListTableConfig())
@@ -34,13 +37,17 @@ function defineListTableConfig(): ListTableConfig {
     ListTableDataMapping.defineDateColumn('createdAt', '创建时间', 180),
     ListTableDataMapping.defineDateColumn('updatedAt', '更新时间', 180)
   ]
-  config.deleteConfig = new DeleteConfig(id => deletePermission(id))
-  config.editConfig = new EditConfig(id => {
+  config.deleteConfig = new DeleteConfig((id: number) => deletePermission(id))
+  config.editConfig = new EditConfig((id: number) => {
     router.push({name: 'PermissionEdit', params: {permissionId: id}})
   })
   return config
 }
 
+function changeStatus(row: Permission) {
+  let newStatus = row.status
+  doSavePermission(row).then(() => ElMessage.success(newStatus ? '已启用' : '已禁用'))
+}
 </script>
 
 <template>
@@ -51,7 +58,7 @@ function defineListTableConfig(): ListTableConfig {
         <el-tag>{{scope.row.resourceTypeName}}</el-tag>
       </template>
       <template #status="scope">
-        <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0">
+        <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" @change="changeStatus(scope.row)">
         </el-switch>
       </template>
     </ListTable>

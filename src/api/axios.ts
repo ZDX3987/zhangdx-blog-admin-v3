@@ -43,6 +43,10 @@ function processCommonResponseCode(responseData: ApiResponse<any>) {
             ElMessage.error(responseData.msg)
             Router.push('/error');
             break;
+        case 401:
+            ElMessage.error(responseData.msg)
+            Router.push('/login')
+            break
         default:
             break;
     }

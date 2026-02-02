@@ -8,15 +8,11 @@ const props = defineProps({
   editFormConfig: {
     type: EditFormConfig
   },
-  formValue: {
-    type: Object,
-    default: {}
-  }
 })
 
 watch(props, (newVal) => {
   if (newVal) {
-    realFormValue.value = newVal.formValue
+    realFormValue.value = newVal.editFormConfig?.formValue
   }
 })
 
@@ -30,7 +26,7 @@ function submitForm() {
   if (validatable) {
     formRef.value?.validate(valid => {
       if (valid) {
-        submitFunc(props.formValue)
+        submitFunc(realFormValue.value)
       }
     })
   }

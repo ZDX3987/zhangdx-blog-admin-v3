@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import {getAuthorization} from "../utils/auth-storage.ts";
 import {ElMessage} from 'element-plus'
+import systemSettingRoute from "./system-setting.ts"
 
 const loginRoute = {
         path: '/login',
@@ -112,33 +113,6 @@ const routes = [
                 ]
             },
             {
-                path: 'systemPermissionManage',
-                name: 'PermissionManage',
-                component: () => import('../views/permission/PermissionManage.vue'),
-                meta: {title: '系统权限管理'},
-                redirect: {name: 'PermissionList'},
-                children: [
-                    {
-                        path: 'list',
-                        name: 'PermissionList',
-                        component: () => import('../views/permission/PermissionList.vue'),
-                        meta: {title: '权限列表'},
-                    },
-                    {
-                        path: 'edit/:permissionId',
-                        name: 'PermissionEdit',
-                        component: () => import('../views/permission/PermissionEdit.vue'),
-                        meta: {title: '编辑权限'},
-                    },
-                    {
-                        path: 'add',
-                        name: 'PermissionAdd',
-                        component: () => import('../views/permission/PermissionEdit.vue'),
-                        meta: {title: '新增权限'},
-                    }
-                ]
-            },
-            {
                 path: 'content',
                 name: 'ContentManage',
                 component: () => import('../views/content/ContentManage.vue'),
@@ -192,6 +166,7 @@ const routes = [
                     }
                 ]
             },
+            ...systemSettingRoute
         ]
     }
 ]

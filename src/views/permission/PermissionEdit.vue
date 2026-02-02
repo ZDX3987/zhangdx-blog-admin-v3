@@ -7,6 +7,7 @@ import {PermissionForm} from "../../type/PermissionForm.ts";
 import {doSavePermission, getPermission} from "../../api/permissionApi.ts";
 import {useRoute, useRouter} from "vue-router";
 import {ElMessage} from "element-plus";
+import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 
 const permissionEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
 const route = useRoute()
@@ -47,19 +48,17 @@ function definePermissionEditFormConfig(formValue: PermissionForm): EditFormConf
 }
 
 function savePermission(formValue: PermissionForm) {
-  doSavePermission(formValue).then(res => {
+  doSavePermission(formValue).then(() => {
     ElMessage.success('保存成功')
     router.push({name: 'PermissionManage'})
-
   }).catch(error => ElMessage.error(error))
 }
 </script>
 
 <template>
-<div class="permission_edit_content" >
-  <EditForm :editFormConfig="permissionEditFormConfig" :formValue="permissionEditFormConfig.formValue">
-
-  </EditForm>
+<div class="permission_edit_content">
+  <SubComponentTitle/>
+  <EditForm :editFormConfig="permissionEditFormConfig"></EditForm>
 </div>
 </template>
 
