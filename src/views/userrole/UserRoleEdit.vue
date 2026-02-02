@@ -39,7 +39,7 @@ function defineRoleEditFormConfig(formValue: Role, allPermission: Permission[]):
     EditFormItem.defineInputItem('角色中文名称', 'roleNameZh').setPlaceholder('请输入角色中文名称'),
     EditFormItem.defineSwitchItem('状态', 'status'),
     EditFormItem.defineTransferItem('角色权限', formatPermissionTransferData(allPermission), 'permissionIdList', ['未选', '已选'])
-        .addRule({ required: true, message: '请选择角色权限', trigger: 'blur' },{ min: 1, message: '最少需要一个权限', trigger: 'blur' })
+        .addRule({ required: true, message: '请选择角色权限', trigger: 'blur' },{ type: 'array', min: 1, message: '最少需要一个权限', trigger: 'blur' })
   ]
   formConfig.submitConfig = new SubmitConfig(saveRole, '保存')
   formConfig.resettable = true

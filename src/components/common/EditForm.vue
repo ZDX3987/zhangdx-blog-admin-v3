@@ -24,7 +24,8 @@ function submitForm() {
   let validatable = props.editFormConfig?.validatable
   let submitFunc = submitConfig?.submitFunc
   if (validatable) {
-    formRef.value?.validate(valid => {
+    formRef.value?.validate((valid, fields) => {
+      console.log(fields)
       if (valid && submitFunc) {
         submitFunc(realFormValue.value)
       }
