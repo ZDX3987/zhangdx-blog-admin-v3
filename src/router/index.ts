@@ -84,7 +84,7 @@ const routes = [
                         component: () => import('../views/category/CategoryEdit.vue'),
                     },
                     {
-                        path: 'edit',
+                        path: 'edit/:categoryId',
                         meta: {title: '编辑标签'},
                         name: 'CategoryEdit',
                         component: () => import('../views/category/CategoryEdit.vue'),

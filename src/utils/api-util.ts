@@ -10,7 +10,7 @@ export async function genApiResponse(promise: Promise<AxiosResponse<ApiResponse<
         if ('string' === typeof error) {
             errorMsg = error
         } else {
-            errorMsg = error.message || error.msg
+            errorMsg = error.msg || error.message
         }
         return Promise.reject(errorMsg)
     }

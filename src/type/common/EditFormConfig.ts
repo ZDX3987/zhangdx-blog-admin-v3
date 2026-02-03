@@ -49,6 +49,13 @@ export class EditFormItem {
         return item
     }
 
+    public static defineVirtualizedSelectItem(label: string, model: string): VirtualizedSelectFormItem {
+        const item = new VirtualizedSelectFormItem()
+        item.label = label
+        item.model = model
+        return item
+    }
+
 
     public setPlaceholder(placeholder: string): EditFormItem {
         this.placeholder = placeholder
@@ -74,6 +81,9 @@ export class EditFormItem {
     public isTransfer(): this is TransferFormItem {
         return this.type === FormItemType.Transfer && (this instanceof TransferFormItem)
     }
+    public isVirtualizedSelect(): this is VirtualizedSelectFormItem {
+        return this.type === FormItemType.VirtualizedSelect && (this instanceof VirtualizedSelectFormItem)
+    }
 }
 class SelectFormItem extends EditFormItem {
     options: FormOption[] = [];
@@ -96,6 +106,12 @@ class TransferFormItem extends EditFormItem {
     constructor() {
         super();
         this.type = FormItemType.Transfer
+    }
+}
+class VirtualizedSelectFormItem extends EditFormItem {
+    constructor() {
+        super();
+        this.type = FormItemType.VirtualizedSelect
     }
 }
 
@@ -153,7 +169,8 @@ export enum FormItemType {
     InputTag,
     DatePicker,
     DateTimePicker,
-    Transfer
+    Transfer,
+    VirtualizedSelect,
 }
 
 export class FormOption {

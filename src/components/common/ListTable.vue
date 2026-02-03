@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {ListTableConfig} from "../../type/common/ListTableConfig.ts";
-import {onMounted, ref, type Slot, watch} from "vue";
+import {ref, type Slot, watch} from "vue";
 import {ElMessage, type TableColumnCtx} from "element-plus";
 import {dateFormat} from "../../utils/moment-date.ts";
 
@@ -15,10 +15,6 @@ const props = defineProps({
   listTableConfig: {
     type: ListTableConfig
   }
-})
-
-onMounted(() => {
-
 })
 
 watch(props, (newConfig) => {
@@ -110,7 +106,7 @@ function currentChange(changePage: number) {
                        :type="mapping.isIndex ? 'index' : 'default'" :width="mapping.width" :formatter="tableDateFormat"
                        :align="mapping.align">
         <template v-for="(slotName, slotType) in mapping.slotTemplates" #[slotType]="slotProps">
-          <slot :name="slotName" v-bind="slotProps"/>
+          <slot v-if="slotName" :name="slotName" v-bind="slotProps"/>
         </template>
       </el-table-column>
       <el-table-column v-if="listTableConfig.needShowOperator()" label="操作" fixed="right" align="center">

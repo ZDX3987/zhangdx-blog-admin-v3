@@ -32,7 +32,7 @@ function defineUserRoleListTableConfig(): ListTableConfig {
     ListTableDataMapping.defineCommonColumn('roleName', '角色名', 300, 'left'),
     ListTableDataMapping.defineCommonColumn('roleNameZh', '角色中文名', 300, 'left'),
     ListTableDataMapping.defineCommonColumn('status', '是否启用', 100)
-        .addSlotTemplate('status', '是否启用'),
+        .addSlotTemplate('status'),
     ListTableDataMapping.defineDateColumn('createdAt', '创建时间', 180),
     ListTableDataMapping.defineDateColumn('updatedAt', '更新时间', 180)
   ]
@@ -49,7 +49,7 @@ function changeStatus(row: Role) {
 <div class="user_role_list">
   <ListTable :listTableConfig="userRoleListTableConfig">
     <template #status="scope">
-      <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" @change="changeStatus(scope.row)">
+      <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" @click="changeStatus(scope.row)">
       </el-switch>
     </template>
   </ListTable>

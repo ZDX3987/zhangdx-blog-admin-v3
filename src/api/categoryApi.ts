@@ -5,7 +5,7 @@ import {CategoryItem} from "../type/CategoryItem.ts";
 
 const url = '/api/category'
 
-export function getAllCategory(pageSize: number, current: number): Promise<ApiResponse<ResultPage<CategoryItem>>> {
+export function getAllCategory(current: number, pageSize: number): Promise<ApiResponse<ResultPage<CategoryItem>>> {
     let params = {
         current: current,
         pageSize: pageSize
@@ -19,4 +19,11 @@ export function updateCategory(category: CategoryItem): Promise<ApiResponse<any>
 
 export function delCategory(cateId: number): Promise<ApiResponse<any>> {
     return genApiResponse(axios.delete(url + '/category/' + cateId));
+}
+
+export function getCategory(cateId: number): Promise<ApiResponse<CategoryItem>> {
+    let params = {
+        categoryId: cateId
+    }
+    return genApiResponse(axios.get(url, {params}));
 }

@@ -54,8 +54,10 @@ function resetForm() {
       </el-switch>
       <el-transfer v-else-if="formItem.isTransfer()" :data="formItem.data" v-model="realFormValue[formItem.model]"
         :titles="formItem.title" :button-texts="formItem.buttonText">
-
       </el-transfer>
+      <el-virtualized-select>
+
+      </el-virtualized-select>
     </el-form-item>
     <el-form-item>
       <el-button v-if="editFormConfig?.submitConfig" :type="editFormConfig?.submitConfig.type" @click="submitForm">

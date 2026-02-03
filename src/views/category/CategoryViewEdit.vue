@@ -51,7 +51,7 @@ function resetForm() {
 }
 
 async function resolveCategoryList(resolve: Resolve) {
-  let apiResponse = await getAllCategory(1000, 1)
+  let apiResponse = await getAllCategory(1, 1000)
   let records = ResultPage.build<CategoryItem>(apiResponse.data, CategoryItem).records
   let firstLevelCate = records.filter(e => e.parentCate === null)
   firstLevelCate.forEach(cate => cate.children = records.filter(e => e.parentCate !== null && e.parentCate.id === cate.id))

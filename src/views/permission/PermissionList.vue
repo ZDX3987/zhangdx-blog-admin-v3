@@ -58,7 +58,7 @@ function changeStatus(row: Permission) {
         <el-tag>{{scope.row.resourceTypeName}}</el-tag>
       </template>
       <template #status="scope">
-        <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" @change="changeStatus(scope.row)">
+        <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0" @click="changeStatus(scope.row)">
         </el-switch>
       </template>
     </ListTable>
