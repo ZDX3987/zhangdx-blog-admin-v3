@@ -20,11 +20,16 @@ export class EditFormItem {
         return item
     }
 
-    public static defineSelectItem(label: string, model: string, options: FormOption[]): EditFormItem {
+    public static defineSelectItem(label: string, model: string, options: FormOption[], remoteFunc?: (keyword: string) => Promise<FormOption[]>): EditFormItem {
         const item = new SelectFormItem()
         item.label = label
         item.model = model
-        item.options = options
+        if (options && options.length > 0) {
+            item.options = options
+        } else if (remoteFunc) {
+            item.remoteFunc = remoteFunc
+            item.isRemoteMode = true
+        }
         return item
     }
 
@@ -48,14 +53,6 @@ export class EditFormItem {
         }
         return item
     }
-
-    public static defineVirtualizedSelectItem(label: string, model: string): VirtualizedSelectFormItem {
-        const item = new VirtualizedSelectFormItem()
-        item.label = label
-        item.model = model
-        return item
-    }
-
 
     public setPlaceholder(placeholder: string): EditFormItem {
         this.placeholder = placeholder
@@ -81,15 +78,22 @@ export class EditFormItem {
     public isTransfer(): this is TransferFormItem {
         return this.type === FormItemType.Transfer && (this instanceof TransferFormItem)
     }
-    public isVirtualizedSelect(): this is VirtualizedSelectFormItem {
-        return this.type === FormItemType.VirtualizedSelect && (this instanceof VirtualizedSelectFormItem)
-    }
 }
 class SelectFormItem extends EditFormItem {
     options: FormOption[] = [];
+    remoteFunc: (keyword: string) => Promise<FormOption[]>;
+    isRemoteMode: boolean = false;
     constructor() {
         super();
         this.type = FormItemType.Select
+        this.remoteFunc = () => Promise.reject([])
+    }
+
+    public selectRemoteSearch(queryName: string) {
+        if (this.remoteFunc) {
+            this.remoteFunc(queryName).then(res => this.options = res || [])
+                .catch(() => this.options = [])
+        }
     }
 }
 class SwitchFormItem extends EditFormItem {
@@ -106,12 +110,6 @@ class TransferFormItem extends EditFormItem {
     constructor() {
         super();
         this.type = FormItemType.Transfer
-    }
-}
-class VirtualizedSelectFormItem extends EditFormItem {
-    constructor() {
-        super();
-        this.type = FormItemType.VirtualizedSelect
     }
 }
 
@@ -169,8 +167,7 @@ export enum FormItemType {
     InputTag,
     DatePicker,
     DateTimePicker,
-    Transfer,
-    VirtualizedSelect,
+    Transfer
 }
 
 export class FormOption {

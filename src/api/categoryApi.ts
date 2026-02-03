@@ -5,10 +5,12 @@ import {CategoryItem} from "../type/CategoryItem.ts";
 
 const url = '/api/category'
 
-export function getAllCategory(current: number, pageSize: number): Promise<ApiResponse<ResultPage<CategoryItem>>> {
+export function getAllCategory(current: number, pageSize: number, queryLevel?: number, queryName?: string): Promise<ApiResponse<ResultPage<CategoryItem>>> {
     let params = {
         current: current,
-        pageSize: pageSize
+        pageSize: pageSize,
+        queryName: queryName,
+        queryLevel: queryLevel
     }
     return genApiResponse(axios.get(url + '/category-page', {params: params}));
 }

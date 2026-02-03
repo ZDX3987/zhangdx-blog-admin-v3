@@ -2,8 +2,8 @@ export class CategoryItem {
     id: number;
     cateName: string;
     articleCount: number;
-    parentCate: CategoryItem | null;
+    parentCate: CategoryItem | undefined;
     status: number;
-
-    children: CategoryItem[] | null;
+    parentId: number;
+    children: CategoryItem[] | undefined;
 }

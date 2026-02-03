@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {EditFormConfig, EditFormItem, FormItemType} from "../../type/common/EditFormConfig.ts";
+import {EditFormConfig, FormItemType} from "../../type/common/EditFormConfig.ts";
 import {ref, watch} from "vue";
 import type {FormInstance} from "element-plus";
 
@@ -24,8 +24,7 @@ function submitForm() {
   let validatable = props.editFormConfig?.validatable
   let submitFunc = submitConfig?.submitFunc
   if (validatable) {
-    formRef.value?.validate((valid, fields) => {
-      console.log(fields)
+    formRef.value?.validate(valid => {
       if (valid && submitFunc) {
         submitFunc(realFormValue.value)
       }
@@ -45,7 +44,8 @@ function resetForm() {
     <el-form-item v-for="formItem in editFormConfig?.formItems" :key="formItem" :label="formItem.label" :prop="formItem.model">
       <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
       </el-input>
-      <el-select v-else-if="formItem.isSelect()" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
+      <el-select v-else-if="formItem.isSelect()" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder"
+        :remote="formItem.isRemoteMode" :filterable="formItem.isRemoteMode" :remote-method="(queryName: string) => formItem.selectRemoteSearch(queryName)">
         <el-option v-for="option in formItem.options" :key="option.value" :label="option.label" :value="option.value">
         </el-option>
       </el-select>
@@ -55,9 +55,6 @@ function resetForm() {
       <el-transfer v-else-if="formItem.isTransfer()" :data="formItem.data" v-model="realFormValue[formItem.model]"
         :titles="formItem.title" :button-texts="formItem.buttonText">
       </el-transfer>
-      <el-virtualized-select>
-
-      </el-virtualized-select>
     </el-form-item>
     <el-form-item>
       <el-button v-if="editFormConfig?.submitConfig" :type="editFormConfig?.submitConfig.type" @click="submitForm">
