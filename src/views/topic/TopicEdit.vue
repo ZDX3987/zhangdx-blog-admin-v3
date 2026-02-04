@@ -2,7 +2,7 @@
 
 import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 import EditForm from "../../components/common/EditForm.vue";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, type VNodeRef} from "vue";
 import {EditFormConfig, EditFormItem, SubmitConfig} from "../../type/common/EditFormConfig.ts";
 import {TopicItem} from "../../type/TopicItem.ts";
 import SelectArticleTable from "../../components/article/SelectArticleTable.vue";
@@ -11,6 +11,7 @@ import type {ArticleItem} from "../../type/ArticleItem.ts";
 
 const topicEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
 const dialogTableVisible = ref<boolean>(false)
+const dialogRef = ref<VNodeRef>()
 const selectArticleList = ref<ArticleItem[]>([])
 
 onMounted(() => {
@@ -35,12 +36,18 @@ function saveTopic() {
   console.log(selectArticleList.value)
 }
 
-function showDialog() {
-  dialogTableVisible.value = true
+function toggleDialog() {
+  dialogTableVisible.value = !dialogTableVisible.value
 }
 
-function selectArticleChange(selectArticle: ArticleItem[]) {
+function confirmSelectArticle(selectArticle: ArticleItem[]) {
   selectArticleList.value = selectArticle
+  dialogTableVisible.value = false
+}
+
+function deleteSelectedArticle(articleId: number) {
+  selectArticleList.value = selectArticleList.value.filter(item => item.id !== articleId)
+  console.log(dialogRef);
 }
 </script>
 
@@ -48,10 +55,10 @@ function selectArticleChange(selectArticle: ArticleItem[]) {
   <SubComponentTitle/>
   <EditForm :editFormConfig="topicEditFormConfig">
   </EditForm>
-  <el-button type="primary" plain @click="showDialog">选择文章</el-button>
+  <el-button type="primary" plain @click="toggleDialog">选择文章</el-button>
   <el-button type="danger" plain>删除文章</el-button>
-  <SelectArticleTable :dataSource="selectArticleList" @selectionChange="selectArticleChange"/>
-  <ArticleSelectDialog :dialogTableVisible="dialogTableVisible" @selectArticleChange="selectArticleChange"/>
+  <SelectArticleTable :dataSource="selectArticleList" @unselectArticle="deleteSelectedArticle"/>
+  <ArticleSelectDialog :dialogTableVisible="dialogTableVisible" @confirmSelectArticle="confirmSelectArticle" @closeDialog="toggleDialog" :ref="dialogRef"/>
 </template>
 
 <style scoped>

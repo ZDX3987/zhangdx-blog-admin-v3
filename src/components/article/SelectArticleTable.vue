@@ -7,7 +7,7 @@ import {getArticlePage} from "../../api/articelApi.ts";
 import type {ArticleItem} from "../../type/ArticleItem.ts";
 
 const selectArticleListTableConfig = ref<ListTableConfig>(new ListTableConfig())
-const emit = defineEmits(['selectionChange'])
+const emit = defineEmits(['selectionChange', 'unselectArticle'])
 const props = defineProps({
   dataSource: {
     type: Array,
@@ -62,7 +62,7 @@ function selectionChange(newSelection: ArticleItem[]) {
 function deleteSelectArticle(articleId: number): Promise<any> {
   let oldTableData = selectArticleListTableConfig.value.tableData || []
   selectArticleListTableConfig.value.tableData = oldTableData.filter(item => item.id !== articleId)
-  emit('selectionChange', selectArticleListTableConfig.value.tableData)
+  emit('unselectArticle', articleId)
   return Promise.resolve()
 }
 </script>
