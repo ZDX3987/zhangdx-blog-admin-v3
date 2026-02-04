@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref, watch} from "vue";
 import SelectArticleTable from "../article/SelectArticleTable.vue";
+import type {ArticleItem} from "../../type/ArticleItem.ts";
 
 const emit = defineEmits(['confirmSelectArticle', 'closeDialog'])
 const props = defineProps({
@@ -13,6 +14,10 @@ watch(props, (newProps) => {
   dialogTableVisible.value = newProps.dialogTableVisible
 })
 
+defineExpose({
+  setSelectedArticleList
+})
+
 function confirmSelectArticle() {
   emit('confirmSelectArticle', selectArticleTableRef.value?.getSelectedArticleList())
   closeDialog()
@@ -23,6 +28,9 @@ function closeDialog() {
   emit('closeDialog')
 }
 
+function setSelectedArticleList(newSelection: ArticleItem[]) {
+  selectArticleTableRef.value?.setSelectedArticleList(newSelection)
+}
 </script>
 
 <template>

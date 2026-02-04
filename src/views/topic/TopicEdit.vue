@@ -48,6 +48,11 @@ function saveTopic() {
   console.log(selectArticleList.value)
 }
 
+function showDialog() {
+  toggleDialog()
+  dialogRef.value?.setSelectedArticleList(selectArticleList.value)
+}
+
 function toggleDialog() {
   dialogTableVisible.value = !dialogTableVisible.value
 }
@@ -66,7 +71,7 @@ function deleteSelectedArticle(articleId: number) {
   <SubComponentTitle/>
   <EditForm :editFormConfig="topicEditFormConfig">
   </EditForm>
-  <el-button type="primary" plain @click="toggleDialog">选择文章</el-button>
+  <el-button type="primary" plain @click="showDialog">选择文章</el-button>
   <el-button type="danger" plain>删除文章</el-button>
   <SelectArticleTable :dataSource="selectArticleList" @unselectArticle="deleteSelectedArticle"/>
   <ArticleSelectDialog :dialogTableVisible="dialogTableVisible" @confirmSelectArticle="confirmSelectArticle" @closeDialog="toggleDialog" ref="dialogRef"/>

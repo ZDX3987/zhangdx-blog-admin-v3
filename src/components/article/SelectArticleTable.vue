@@ -7,6 +7,7 @@ import {getArticlePage} from "../../api/articelApi.ts";
 import type {ArticleItem} from "../../type/ArticleItem.ts";
 
 const selectArticleListTableConfig = ref<ListTableConfig>(new ListTableConfig())
+const listTableRef = ref<InstanceType<typeof ListTable>>()
 const emit = defineEmits(['unselectArticle'])
 const props = defineProps({
   dataSource: {
@@ -31,7 +32,8 @@ onMounted(() => {
 })
 
 defineExpose({
-  getSelectedArticleList
+  getSelectedArticleList,
+  setSelectedArticleList
 })
 
 function defineSelectArticleListTableConfig(): ListTableConfig {
@@ -68,6 +70,12 @@ function selectionChange(newSelection: ArticleItem[]) {
 function getSelectedArticleList(): ArticleItem[] {
   return selectedArticleList.value
 }
+function setSelectedArticleList(newSelection: ArticleItem[]) {
+  selectedArticleList.value = newSelection
+  newSelection.forEach(item => {
+    listTableRef.value?.selectRow(item)
+  })
+}
 
 function deleteSelectArticle(articleId: number): Promise<any> {
   let oldTableData = selectArticleListTableConfig.value.tableData || []
@@ -78,7 +86,7 @@ function deleteSelectArticle(articleId: number): Promise<any> {
 </script>
 
 <template>
-  <ListTable :listTableConfig="selectArticleListTableConfig" :selectionChangeFunc="selectionChange">
+  <ListTable ref="listTableRef" :listTableConfig="selectArticleListTableConfig" :selectionChangeFunc="selectionChange">
     <template #articleType="scope">
       <el-tag :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{ scope.row.articleType }}
       </el-tag>

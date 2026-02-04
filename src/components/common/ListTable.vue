@@ -2,7 +2,7 @@
 
 import {ListTableConfig} from "../../type/common/ListTableConfig.ts";
 import {ref, type Slot, watch} from "vue";
-import {ElMessage, type TableColumnCtx} from "element-plus";
+import {ElMessage, ElTable, type TableColumnCtx} from "element-plus";
 import {dateFormat} from "../../utils/moment-date.ts";
 
 
@@ -10,12 +10,17 @@ const pageSize = ref<number>(15)
 const currentPage = ref<number>(1)
 const total = ref<number>(0)
 const tableData = ref<any[] | undefined>([])
+const tableRef = ref<InstanceType<typeof ElTable>>()
 
 const props = defineProps({
   listTableConfig: {
     type: ListTableConfig
   },
   selectionChangeFunc: Function
+})
+
+defineExpose({
+  selectRow
 })
 
 watch(() => props.listTableConfig, (newConfig) => {
@@ -97,6 +102,11 @@ function currentChange(changePage: number) {
   queryTableData(changePage, pageSize.value)
 }
 
+
+function selectRow(row: any) {
+  tableRef.value.toggleRowSelection(row, true)
+}
+
 </script>
 
 <template>
@@ -107,7 +117,7 @@ function currentChange(changePage: number) {
     </el-button-group>
   </div>
   <div class="list_table_table">
-    <el-table :data="tableData" @selection-change="selectionChangeFunc">
+    <el-table ref="tableRef" :data="tableData" @selection-change="selectionChangeFunc">
       <el-table-column v-for="mapping in listTableConfig.tableMappings" :key="mapping" :prop="mapping.prop" :label="mapping.label"
                        :type="mapping.type" :width="mapping.width" :formatter="tableDateFormat"
                        :align="mapping.align">
