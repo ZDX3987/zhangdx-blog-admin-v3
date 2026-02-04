@@ -26,7 +26,7 @@ const articleSourceEnum:any = {
 const articleQueryForm = reactive({
   authorName: '',
   queryStatus: [],
-  queryDate: null
+  queryDate: undefined,
 })
 const isLoading = ref<boolean>(false)
 
@@ -134,7 +134,7 @@ function currentChange(changePage: number) {
       </el-table-column>
       <el-table-column label="来源" prop="articleType" align="center" width="100">
         <template #default="scope">
-          <el-tag  :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{scope.row.articleType}}</el-tag>
+          <el-tag :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{scope.row.articleType}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="标签" align="center" width="300">

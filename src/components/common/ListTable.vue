@@ -9,17 +9,23 @@ import {dateFormat} from "../../utils/moment-date.ts";
 const pageSize = ref<number>(15)
 const currentPage = ref<number>(1)
 const total = ref<number>(0)
-const tableData = ref<any[]>([])
+const tableData = ref<any[] | undefined>([])
 
 const props = defineProps({
   listTableConfig: {
     type: ListTableConfig
-  }
+  },
+  selectionChangeFunc: Function
 })
 
-watch(props, (newConfig) => {
-  if (newConfig !== undefined) {
+watch(() => props.listTableConfig, (newConfig) => {
+  if (!newConfig?.isLocalDataSource()) {
     queryTableData(1, pageSize.value)
+  }
+})
+watch(() => props.listTableConfig?.tableData, (newTableData) => {
+  if (tableData !== undefined) {
+    tableData.value = newTableData
   }
 })
 
@@ -101,9 +107,9 @@ function currentChange(changePage: number) {
     </el-button-group>
   </div>
   <div class="list_table_table">
-    <el-table :data="tableData">
+    <el-table :data="tableData" @selection-change="selectionChangeFunc">
       <el-table-column v-for="mapping in listTableConfig.tableMappings" :key="mapping" :prop="mapping.prop" :label="mapping.label"
-                       :type="mapping.isIndex ? 'index' : 'default'" :width="mapping.width" :formatter="tableDateFormat"
+                       :type="mapping.type" :width="mapping.width" :formatter="tableDateFormat"
                        :align="mapping.align">
         <template v-for="(slotName, slotType) in mapping.slotTemplates" #[slotType]="slotProps">
           <slot v-if="slotName" :name="slotName" v-bind="slotProps"/>

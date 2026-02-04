@@ -7,6 +7,8 @@ export class ListTableDataMapping {
     label: string;
     width: number;
     isIndex: boolean;
+    isSelection: boolean;
+    type: string = 'default';
     datePattern: string;
     isDate: boolean;
     slotTemplates: SlotType;
@@ -20,6 +22,14 @@ export class ListTableDataMapping {
         mapping.label = label || '序号'
         mapping.width = width || 80
         mapping.align = 'center'
+        mapping.type = 'index'
+        return mapping
+    }
+
+    public static defineSelectionColumn(): ListTableDataMapping {
+        let mapping = new ListTableDataMapping()
+        mapping.isSelection = true
+        mapping.type = 'selection'
         return mapping
     }
 
@@ -139,6 +149,7 @@ export class ListTableConfig {
     tableMappings: ListTableDataMapping[] = [];
     queryConfig: QueryConfig;
     addConfig: AddConfig;
+    tableData: any[] | undefined;
 
     public constructor() {
         this.tableMappings = []
@@ -148,5 +159,9 @@ export class ListTableConfig {
 
     public needShowOperator(): boolean {
         return this.deleteConfig !== undefined || this.editConfig !== undefined
+    }
+
+    public isLocalDataSource(): boolean {
+        return this.tableData
     }
 }

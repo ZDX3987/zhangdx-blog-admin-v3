@@ -4,7 +4,7 @@ import {genApiResponse} from "../utils/api-util.ts";
 
 const url = '/api/article'
 
-export function getArticlePage(pageSize: number, pageIndex: number, queryStatus: number[], sort: number, queryDate: string[]): Promise<ApiResponse<ResultPage<any>>> {
+export function getArticlePage(pageSize: number, pageIndex: number, queryStatus: number[], sort: number, queryDate?: string[]): Promise<ApiResponse<ResultPage<any>>> {
     let formData = new FormData();
     pageIndex--
     formData.append("pageSize", pageSize.toString());

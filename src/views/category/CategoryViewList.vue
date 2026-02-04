@@ -4,13 +4,24 @@ import {onMounted, ref} from "vue";
 import {CategoryViewConfig} from "../../type/CategoryViewConfig.ts";
 import {getAllCategoryView} from "../../api/categoryViewApi.ts";
 import {useRouter} from "vue-router";
+import ListTable from "../../components/common/ListTable.vue";
+import {
+  AddConfig,
+  DeleteConfig,
+  EditConfig,
+  ListTableConfig,
+  ListTableDataMapping,
+  QueryConfig
+} from "../../type/common/ListTableConfig.ts";
 
 const configList = ref<CategoryViewConfig[]>([]);
 
 const router = useRouter()
+const categoryViewListTableConfig = ref<ListTableConfig>();
 
 onMounted(() => {
   queryCategoryViewList()
+  categoryViewListTableConfig.value = defineCategoryViewListTableConfig()
 })
 
 function queryCategoryViewList() {
@@ -21,6 +32,19 @@ function queryCategoryViewList() {
 
 function addCategoryView() {
   router.push({name: 'CategoryViewAdd'})
+}
+
+function defineCategoryViewListTableConfig(): ListTableConfig {
+  const config = new ListTableConfig()
+  config.addConfig = new AddConfig('新建标签视图', addCategoryView)
+  config.editConfig = new EditConfig((id: number) => router.push({name: 'CategoryViewEdit', params: {viewId: id}}))
+  config.deleteConfig = new DeleteConfig((id: number) => {})
+  config.queryConfig = new QueryConfig((current, pageSize) => getAllCategoryView())
+  config.tableMappings = [
+      ListTableDataMapping.defineIndexColumn(),
+
+  ]
+  return config;
 }
 </script>
 
@@ -69,6 +93,9 @@ function addCategoryView() {
     </el-table-column>
   </el-table>
 </div>
+  <ListTable :listTableConfig="categoryViewListTableConfig">
+
+  </ListTable>
 </template>
 
 <style scoped>

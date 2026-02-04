@@ -4,9 +4,10 @@
 
 <template>
 <div class="common_content_wrapper">
-  <RouterView></RouterView>
+  <RouterView/>
 </div>
 </template>
 
 <style scoped>
+
 </style>

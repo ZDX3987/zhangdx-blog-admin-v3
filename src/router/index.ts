@@ -55,12 +55,26 @@ const routes = [
                 path: 'topic',
                 name: 'TopicManage',
                 meta: {title: '专栏管理'},
+                redirect: {name: 'TopicList'},
+                component: () => import('../views/topic/TopicManage.vue'),
                 children: [
                     {
                         path: 'list',
                         name: 'TopicList',
                         meta: {title: '专栏列表'},
                         component: () => import('../views/topic/TopicList.vue'),
+                    },
+                    {
+                        path: 'edit',
+                        name: 'TopicEdit',
+                        meta: {title: '编辑专栏'},
+                        component: () => import('../views/topic/TopicEdit.vue'),
+                    },
+                    {
+                        path: 'add',
+                        name: 'TopicAdd',
+                        meta: {title: '新建专栏'},
+                        component: () => import('../views/topic/TopicEdit.vue'),
                     }
                 ]
             },
@@ -109,6 +123,12 @@ const routes = [
                         name: 'CategoryViewAdd',
                         component: () => import('../views/category/CategoryViewEdit.vue'),
                         meta: {title: '新增视图'},
+                    },
+                    {
+                        path: 'edit/:viewId',
+                        name: 'CategoryViewEdit',
+                        component: () => import('../views/category/CategoryViewEdit.vue'),
+                        meta: {title: '编辑视图'},
                     }
                 ]
             },
