@@ -12,3 +12,7 @@ export function getTopicPages(current: number, pageSize: number): Promise<ApiRes
     }
     return genApiResponse(axios.get(url + '/topic-page', {params}))
 }
+
+export function getTopicItem(topicId: number): Promise<ApiResponse<TopicItem>>  {
+    return genApiResponse(axios.get(url + '/topic/' + topicId))
+}

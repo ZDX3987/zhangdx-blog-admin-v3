@@ -7,7 +7,7 @@ import {getArticlePage} from "../../api/articelApi.ts";
 import type {ArticleItem} from "../../type/ArticleItem.ts";
 
 const selectArticleListTableConfig = ref<ListTableConfig>(new ListTableConfig())
-const emit = defineEmits(['selectionChange', 'unselectArticle'])
+const emit = defineEmits(['unselectArticle'])
 const props = defineProps({
   dataSource: {
     type: Array,
@@ -19,6 +19,8 @@ const articleTypeEnum: any = {
   "转载": {color: "warning"},
 }
 
+const selectedArticleList = ref<ArticleItem[]>([])
+
 watch(props, (newProps) => {
   selectArticleListTableConfig.value.tableData = newProps.dataSource
 })
@@ -26,6 +28,10 @@ watch(props, (newProps) => {
 
 onMounted(() => {
   selectArticleListTableConfig.value = defineSelectArticleListTableConfig()
+})
+
+defineExpose({
+  getSelectedArticleList
 })
 
 function defineSelectArticleListTableConfig(): ListTableConfig {
@@ -56,7 +62,11 @@ function queryArticle(queryPage: number, queryPageSize: number) {
 }
 
 function selectionChange(newSelection: ArticleItem[]) {
-  emit('selectionChange', newSelection)
+  selectedArticleList.value = newSelection
+}
+
+function getSelectedArticleList(): ArticleItem[] {
+  return selectedArticleList.value
 }
 
 function deleteSelectArticle(articleId: number): Promise<any> {

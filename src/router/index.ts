@@ -65,7 +65,7 @@ const routes = [
                         component: () => import('../views/topic/TopicList.vue'),
                     },
                     {
-                        path: 'edit',
+                        path: 'edit/:topicId',
                         name: 'TopicEdit',
                         meta: {title: '编辑专栏'},
                         component: () => import('../views/topic/TopicEdit.vue'),

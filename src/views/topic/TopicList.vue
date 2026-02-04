@@ -22,7 +22,7 @@ onMounted(() => {
 function defineTopicListTableConfig(): ListTableConfig {
   const config = new ListTableConfig()
   config.addConfig = new AddConfig('新建专栏', () => router.push({name: 'TopicAdd'}))
-  config.editConfig = new EditConfig((id: number) => router.push({name: 'TopicEdit', params: {viewId: id}}))
+  config.editConfig = new EditConfig((id: number) => router.push({name: 'TopicEdit', params: {topicId: id}}))
   config.deleteConfig = new DeleteConfig((id: number) => {})
   config.queryConfig.queryFunc = (current, pageSize) => getTopicPages(current, pageSize)
   config.tableMappings = [
