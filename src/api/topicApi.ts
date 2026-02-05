@@ -18,12 +18,12 @@ export function getTopicItem(topicId: number): Promise<ApiResponse<TopicItem>> {
 }
 
 export function saveTopicItem(topicForm: TopicItem): Promise<ApiResponse<any>> {
-    return genApiResponse(axios.post(url + '/topic', topicForm))
+    return genApiResponse(axios.put(url + '/topic', topicForm))
 }
 
 export function deleteTopicItem(topicId: number): Promise<ApiResponse<any>> {
     let params = {
         topicId
     }
-    return genApiResponse(axios.delete(url + '/topic', {params}))
+    return genApiResponse(axios.delete(url, {params}))
 }

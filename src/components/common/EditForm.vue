@@ -40,7 +40,7 @@ function resetForm() {
 
 <template>
 <div class="edit_form_wrapper" :style="{width: editFormConfig?.wrapperWidthPercent + '%'}">
-  <el-form :model="realFormValue" label-width="auto" ref="formRef" :rules="editFormConfig?.rules">
+  <el-form :model="realFormValue" label-width="auto" ref="formRef" :rules="editFormConfig?.rules" :inline="editFormConfig?.inline">
     <el-form-item v-for="formItem in editFormConfig?.formItems" :key="formItem" :label="formItem.label" :prop="formItem.model">
       <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
       </el-input>

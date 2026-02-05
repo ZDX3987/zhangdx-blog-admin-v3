@@ -8,11 +8,12 @@ import {TopicItem} from "../../type/TopicItem.ts";
 import SelectArticleTable from "../../components/article/SelectArticleTable.vue";
 import ArticleSelectDialog from "../../components/dialog/ArticleSelectDialog.vue";
 import type {ArticleItem} from "../../type/ArticleItem.ts";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {getTopicItem, saveTopicItem} from "../../api/topicApi.ts";
-import type {ApiResponse} from "../../api/axios.ts";
+import {ElMessage} from "element-plus";
 
 const route = useRoute()
+const router = useRouter()
 const topicEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
 const dialogTableVisible = ref<boolean>(false)
 const dialogRef = ref<InstanceType<typeof ArticleSelectDialog>>()
@@ -38,17 +39,23 @@ function defineTopicEditFormConfig(formValue: TopicItem): EditFormConfig {
     EditFormItem.defineInputItem('专栏名称', 'title').setPlaceholder('请输入专栏名称')
         .addRule({ required: true, message: '请输入专栏名称', trigger: 'blur' }),
   ]
-  formConfig.wrapperWidthPercent = 50
   formConfig.openValidate()
   formConfig.resettable = false
+  formConfig.inline = true
   formConfig.submitConfig = new SubmitConfig(saveTopic, '保存')
   return formConfig
 }
 
-function saveTopic(): Promise<ApiResponse<any>> {
+function saveTopic() {
   let topicForm = topicEditFormConfig.value.formValue
+  if (selectArticleList.value.length === 0) {
+    ElMessage.error('请选择文章')
+  }
   topicForm.articleVOList = selectArticleList.value
-  return saveTopicItem(topicForm)
+  saveTopicItem(topicForm).then(() => {
+    ElMessage.success('保存成功')
+    router.push({name: 'TopicManage'})
+  })
 }
 
 function showDialog() {
@@ -75,11 +82,12 @@ function deleteSelectedArticle(articleId: number) {
   <EditForm :editFormConfig="topicEditFormConfig">
   </EditForm>
   <el-button type="primary" plain @click="showDialog">选择文章</el-button>
-  <el-button type="danger" plain>删除文章</el-button>
-  <SelectArticleTable :dataSource="selectArticleList" @unselectArticle="deleteSelectedArticle"/>
+  <SelectArticleTable class="topic_select_article_table" :dataSource="selectArticleList" @unselectArticle="deleteSelectedArticle"/>
   <ArticleSelectDialog :dialogTableVisible="dialogTableVisible" @confirmSelectArticle="confirmSelectArticle" @closeDialog="toggleDialog" ref="dialogRef"/>
 </template>
 
 <style scoped>
-
+.topic_select_article_table {
+  width: 50%;
+}
 </style>

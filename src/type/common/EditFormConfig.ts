@@ -135,6 +135,7 @@ export class EditFormConfig {
     wrapperWidthPercent: number;
     validatable: boolean = false;
     rules: any;
+    inline: boolean = false
 
     public constructor() {
         this.formItems = []
