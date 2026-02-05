@@ -55,6 +55,20 @@ export class EditFormItem {
         return item
     }
 
+    public static defineUploadItem(label: string, model: string): EditFormItem {
+        const item = new UploadFormItem()
+        item.label = label
+        item.model = model
+        return item
+    }
+
+    public static defineSlotItem(label: string, slotName: string): EditFormItem {
+        const item = new SlotFormItem()
+        item.label = label
+        item.slot = new SlotType(slotName)
+        return item
+    }
+
     public setPlaceholder(placeholder: string): EditFormItem {
         this.placeholder = placeholder
         return this
@@ -78,6 +92,14 @@ export class EditFormItem {
     }
     public isTransfer(): this is TransferFormItem {
         return this.type === FormItemType.Transfer && (this instanceof TransferFormItem)
+    }
+
+    public isUpload(): this is UploadFormItem {
+        return this.type === FormItemType.Upload && (this instanceof UploadFormItem)
+    }
+
+    public isSlot(): this is SlotFormItem {
+        return this.type === FormItemType.Slot && (this instanceof SlotFormItem)
     }
 }
 class SelectFormItem extends EditFormItem {
@@ -117,6 +139,21 @@ class TransferFormItem extends EditFormItem {
     constructor() {
         super();
         this.type = FormItemType.Transfer
+    }
+}
+class UploadFormItem extends EditFormItem {
+    listType: string = 'picture-card'
+    constructor() {
+        super();
+        this.type = FormItemType.Upload
+    }
+}
+
+class SlotFormItem extends EditFormItem {
+    slot: SlotType | undefined
+    constructor() {
+        super();
+        this.type = FormItemType.Slot
     }
 }
 
@@ -195,7 +232,8 @@ export enum FormItemType {
     InputTag,
     DatePicker,
     DateTimePicker,
-    Transfer
+    Transfer,
+    Slot
 }
 
 export class FormOption {

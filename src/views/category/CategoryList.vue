@@ -31,7 +31,7 @@ function defineCategoryListTableConfig(): ListTableConfig {
   config.tableMappings = [
     ListTableDataMapping.defineIndexColumn(),
     ListTableDataMapping.defineCommonColumn('cateName', '名称', 280),
-    ListTableDataMapping.defineCommonColumn('parentCate.cateName', '名称', 280),
+    ListTableDataMapping.defineCommonColumn('parentCate.cateName', '父标签名称', 280),
     ListTableDataMapping.defineCommonColumn('articleCount', '文章数量', 120)
         .addSlotTemplate('', 'articleCountHeader'),
     ListTableDataMapping.defineCommonColumn('status', '是否启用', 100)

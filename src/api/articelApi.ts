@@ -1,6 +1,7 @@
 import axios, {type ApiResponse} from "./axios.ts";
 import type {ResultPage} from "../type/ResultPage.ts";
 import {genApiResponse} from "../utils/api-util.ts";
+import type {ArticleItem} from "../type/ArticleItem.ts";
 
 const url = '/api/article'
 
@@ -33,4 +34,8 @@ export function toCheckArticle(id: number, toStatus: number): Promise<ApiRespons
     let formData = new FormData();
     formData.append("toStatus", toStatus.toString());
     return genApiResponse(axios.put(url + '/check-article/' + id, formData));
+}
+
+export function getArticleById(articleId: number): Promise<ApiResponse<ArticleItem>> {
+    return genApiResponse(axios.get(url + '/article/' + articleId));
 }

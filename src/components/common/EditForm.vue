@@ -3,6 +3,7 @@
 import {EditFormConfig, FormItemType} from "../../type/common/EditFormConfig.ts";
 import {ref, type Slot, watch} from "vue";
 import type {FormInstance} from "element-plus";
+import {Plus} from "@element-plus/icons-vue";
 
 const props = defineProps({
   editFormConfig: {
@@ -57,6 +58,11 @@ function resetForm() {
       <el-transfer v-else-if="formItem.isTransfer()" :data="formItem.data" v-model="realFormValue[formItem.model]"
         :titles="formItem.title" :button-texts="formItem.buttonText">
       </el-transfer>
+      <el-upload v-else-if="formItem.isUpload()" :list-type="formItem.listType">
+        <img v-if="realFormValue[formItem.model]" :src="realFormValue[formItem.model]" alt=""/>
+        <el-icon v-else><Plus/></el-icon>
+      </el-upload>
+      <slot v-else-if="formItem.isSlot()" :name="formItem.slot?.default"/>
     </el-form-item>
     <slot v-if="editFormConfig?.afterSlotTemplate" :name="editFormConfig.afterSlotTemplate.default"/>
     <el-form-item>

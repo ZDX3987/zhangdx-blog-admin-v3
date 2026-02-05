@@ -70,7 +70,7 @@ function editArticle(row: ArticleItem) {
     ElMessage.warning('该文章已发布，不可直接编辑')
     return
   }
-  router.push({name: 'PublishArticle', params: {operate: 'update', article: row}})
+  router.push({name: 'EditArticle', params: {articleId: row.id}})
 }
 function downloadArticle(row: ArticleItem) {
   if (row.source !== 2) {

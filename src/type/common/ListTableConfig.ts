@@ -150,6 +150,7 @@ export class ListTableConfig {
     queryConfig: QueryConfig;
     addConfig: AddConfig;
     tableData: any[] | undefined;
+    highlightCurrentRow: boolean = false;
 
     public constructor() {
         this.tableMappings = []

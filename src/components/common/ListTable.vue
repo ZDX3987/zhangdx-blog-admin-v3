@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {ListTableConfig} from "../../type/common/ListTableConfig.ts";
-import {nextTick, ref, type Slot, watch} from "vue";
+import {nextTick, onMounted, ref, type Slot, watch} from "vue";
 import {ElMessage, ElTable, type TableColumnCtx} from "element-plus";
 import {dateFormat} from "../../utils/moment-date.ts";
 
@@ -23,8 +23,10 @@ const props = defineProps({
   }
 })
 
-defineExpose({
-  selectRows
+onMounted(() => {
+  if (!props.listTableConfig?.isLocalDataSource()) {
+    queryTableData(1, pageSize.value)
+  }
 })
 
 watch(() => props.listTableConfig, (newConfig) => {
@@ -117,7 +119,14 @@ function selectRows(rowKeySet: number[]) {
       tableRef.value.toggleRowSelection(item, true)
     }
   })
+}
 
+function selectSingleRow() {
+
+}
+
+function tableCurrentChange(row: any) {
+  console.log(row)
 }
 
 </script>
@@ -130,7 +139,8 @@ function selectRows(rowKeySet: number[]) {
     </el-button-group>
   </div>
   <div class="list_table_table">
-    <el-table ref="tableRef" :data="tableData" @selection-change="selectionChangeFunc" row-key="id">
+    <el-table ref="tableRef" :data="tableData" @selection-change="selectionChangeFunc" row-key="id"
+      :highlight-current-row="listTableConfig.highlightCurrentRow" @current-change="tableCurrentChange">
       <el-table-column v-for="mapping in listTableConfig.tableMappings" :key="mapping" :prop="mapping.prop" :label="mapping.label"
                        :type="mapping.type" :width="mapping.width" :formatter="tableDateFormat"
                        :align="mapping.align">

@@ -29,6 +29,7 @@ const routes = [
                 path: '/article',
                 name: 'ArticleManage',
                 redirect: {name: 'ArticleList'},
+                component: () => import('../views/article/ArticleManage.vue'),
                 meta: {title: '文章管理'},
                 children: [
                     {
@@ -40,8 +41,14 @@ const routes = [
                     {
                         path: 'publish',
                         name: 'PublishArticle',
-                        component: () => import('../views/article/PublishArticle.vue'),
+                        component: () => import('../views/article/ArticleEdit.vue'),
                         meta: {title: '发布文章'},
+                    },
+                    {
+                        path: 'edit/:articleId',
+                        name: 'EditArticle',
+                        component: () => import('../views/article/ArticleEdit.vue'),
+                        meta: {title: '编辑文章'},
                     },
                     {
                         path: 'draftbox',

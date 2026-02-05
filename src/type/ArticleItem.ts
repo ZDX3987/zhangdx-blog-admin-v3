@@ -1,4 +1,5 @@
 import type {Author} from "./Author.ts";
+import type {CategoryItem} from "./CategoryItem.ts";
 
 export class ArticleItem {
     id: number;
@@ -18,6 +19,6 @@ export class ArticleItem {
     readCount: number;
     commentCount: number;
     author: Author;
-    categories: Object[]
+    categories: CategoryItem[]
 
 }
