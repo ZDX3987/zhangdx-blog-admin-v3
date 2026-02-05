@@ -20,7 +20,7 @@ export class EditFormItem {
         return item
     }
 
-    public static defineSelectItem(label: string, model: string, options: FormOption[], remoteFunc?: (keyword: string) => Promise<FormOption[]>): EditFormItem {
+    public static defineSelectItem(label: string, model: string, options: FormOption[], remoteFunc?: (keyword: string) => Promise<FormOption[]>, isMultiple?: boolean): EditFormItem {
         const item = new SelectFormItem()
         item.label = label
         item.model = model
@@ -30,6 +30,7 @@ export class EditFormItem {
             item.remoteFunc = remoteFunc
             item.isRemoteMode = true
         }
+        item.multiple = !!isMultiple
         return item
     }
 
@@ -83,6 +84,7 @@ class SelectFormItem extends EditFormItem {
     options: FormOption[] = [];
     remoteFunc: (keyword: string) => Promise<FormOption[]>;
     isRemoteMode: boolean = false;
+    multiple: boolean = false;
     constructor() {
         super();
         this.type = FormItemType.Select
@@ -94,6 +96,11 @@ class SelectFormItem extends EditFormItem {
             this.remoteFunc(queryName).then(res => this.options = res || [])
                 .catch(() => this.options = [])
         }
+    }
+
+    public setMultiple(isMultiple: boolean): SelectFormItem {
+        this.multiple = isMultiple
+        return this
     }
 }
 class SwitchFormItem extends EditFormItem {

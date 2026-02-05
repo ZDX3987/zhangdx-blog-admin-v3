@@ -45,7 +45,8 @@ function resetForm() {
       <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
       </el-input>
       <el-select v-else-if="formItem.isSelect()" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder"
-        :remote="formItem.isRemoteMode" :filterable="formItem.isRemoteMode" :remote-method="(queryName: string) => formItem.selectRemoteSearch(queryName)">
+        :remote="formItem.isRemoteMode" filterable :remote-method="(queryName: string) => formItem.selectRemoteSearch(queryName)"
+        :multiple="formItem.multiple">
         <el-option v-for="option in formItem.options" :key="option.value" :label="option.label" :value="option.value">
         </el-option>
       </el-select>
