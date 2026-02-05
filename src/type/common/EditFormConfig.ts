@@ -120,6 +120,14 @@ class TransferFormItem extends EditFormItem {
     }
 }
 
+class SlotType {
+    default: string;
+
+    constructor(defaultName: string) {
+        this.default = defaultName
+    }
+}
+
 
 export class SubmitConfig {
     btnText: string;
@@ -143,6 +151,8 @@ export class EditFormConfig {
     validatable: boolean = false;
     rules: any;
     inline: boolean = false
+    beforeSlotTemplate: SlotType;
+    afterSlotTemplate: SlotType;
 
     public constructor() {
         this.formItems = []
@@ -156,6 +166,16 @@ export class EditFormConfig {
         // @ts-ignore
         this.formItems.forEach(item => ruleObj[item.model] = item.rules)
         this.rules = ruleObj
+        return this
+    }
+
+    public addBeforeSlotTemplate(beforeSlotName: string): EditFormConfig {
+        this.beforeSlotTemplate = new SlotType(beforeSlotName)
+        return this
+    }
+
+    public addAfterSlotTemplate(rightSlotName: string): EditFormConfig {
+        this.afterSlotTemplate = new SlotType(rightSlotName)
         return this
     }
 

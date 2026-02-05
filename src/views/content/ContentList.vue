@@ -4,7 +4,13 @@ import {onMounted, ref} from "vue";
 import {deleteContentApi, getContentPage} from "../../api/content.ts";
 import {useRouter} from "vue-router";
 import ListTable from "../../components/common/ListTable.vue";
-import {DeleteConfig, EditConfig, ListTableConfig, ListTableDataMapping} from "../../type/common/ListTableConfig.ts";
+import {
+  AddConfig,
+  DeleteConfig,
+  EditConfig,
+  ListTableConfig,
+  ListTableDataMapping
+} from "../../type/common/ListTableConfig.ts";
 
 const router = useRouter()
 const listTableConfig = ref<ListTableConfig>(new ListTableConfig())
@@ -24,18 +30,15 @@ function defineListTableConfig(): ListTableConfig {
     ListTableDataMapping.defineDateColumn('updateDate', '更新时间', 180)
   ]
   config.deleteConfig = new DeleteConfig((id: number) => deleteContentApi(id))
-  config.editConfig = new EditConfig((id: number) => {
-    router.push({name: 'ContentEdit', params: {contentId: id}})
-  })
+  config.editConfig = new EditConfig((id: number) => router.push({name: 'ContentEdit', params: {contentId: id}}))
+  config.addConfig = new AddConfig('新建内容', () => router.push({name: 'ContentAdd'}))
   return config;
 }
-
 </script>
 
 <template>
 <div class="content_list_content">
   <ListTable :listTableConfig="listTableConfig">
-
   </ListTable>
 </div>
 </template>

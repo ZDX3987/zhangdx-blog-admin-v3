@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {EditFormConfig, FormItemType} from "../../type/common/EditFormConfig.ts";
-import {ref, watch} from "vue";
+import {ref, type Slot, watch} from "vue";
 import type {FormInstance} from "element-plus";
 
 const props = defineProps({
@@ -41,6 +41,7 @@ function resetForm() {
 <template>
 <div class="edit_form_wrapper" :style="{width: editFormConfig?.wrapperWidthPercent + '%'}">
   <el-form :model="realFormValue" label-width="auto" ref="formRef" :rules="editFormConfig?.rules" :inline="editFormConfig?.inline">
+    <slot v-if="editFormConfig?.beforeSlotTemplate" :name="editFormConfig.beforeSlotTemplate.default"/>
     <el-form-item v-for="formItem in editFormConfig?.formItems" :key="formItem" :label="formItem.label" :prop="formItem.model">
       <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
       </el-input>
@@ -57,6 +58,7 @@ function resetForm() {
         :titles="formItem.title" :button-texts="formItem.buttonText">
       </el-transfer>
     </el-form-item>
+    <slot v-if="editFormConfig?.afterSlotTemplate" :name="editFormConfig.afterSlotTemplate.default"/>
     <el-form-item>
       <el-button v-if="editFormConfig?.submitConfig" :type="editFormConfig?.submitConfig.type" @click="submitForm">
         {{editFormConfig?.submitConfig.btnText}}</el-button>
