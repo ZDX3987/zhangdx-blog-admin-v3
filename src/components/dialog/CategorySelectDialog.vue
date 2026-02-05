@@ -4,10 +4,12 @@ import {useRouter} from "vue-router";
 import {ListTableConfig, ListTableDataMapping} from "../../type/common/ListTableConfig.ts";
 import {getAllCategory} from "../../api/categoryApi.ts";
 import ListTable from "../common/ListTable.vue";
+import type {CategoryItem} from "../../type/CategoryItem.ts";
 
 const dialogTableVisible = ref<boolean>(false)
 const router = useRouter()
 const categoryListTableConfig = ref<ListTableConfig>(new ListTableConfig())
+const emit = defineEmits(['selectSingleCategory'])
 
 defineExpose({
   showDialog
@@ -38,11 +40,16 @@ function showDialog() {
 function closeDialog() {
   dialogTableVisible.value = false
 }
+
+function selectSingleRow(row: CategoryItem) {
+  emit('selectSingleCategory', row)
+  closeDialog()
+}
 </script>
 
 <template>
 <el-dialog v-model="dialogTableVisible" title="请选择标签" width="600" @close="closeDialog">
-  <ListTable :listTableConfig="categoryListTableConfig">
+  <ListTable :listTableConfig="categoryListTableConfig" @selectSingleRow="selectSingleRow">
     <template #articleCountHeader>
       <el-tooltip effect="dark" content="只包含已发布的文章数量" placement="top">
         <span>文章数量</span>

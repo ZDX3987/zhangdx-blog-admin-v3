@@ -12,6 +12,8 @@ const total = ref<number>(0)
 const tableData = ref<any[] | undefined>([])
 const tableRef = ref<InstanceType<typeof ElTable>>()
 
+const emit = defineEmits(['selectSingleRow'])
+
 const props = defineProps({
   listTableConfig: {
     type: ListTableConfig
@@ -121,12 +123,8 @@ function selectRows(rowKeySet: number[]) {
   })
 }
 
-function selectSingleRow() {
-
-}
-
 function tableCurrentChange(row: any) {
-  console.log(row)
+  emit('selectSingleRow', row)
 }
 
 </script>

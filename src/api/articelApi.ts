@@ -39,3 +39,19 @@ export function toCheckArticle(id: number, toStatus: number): Promise<ApiRespons
 export function getArticleById(articleId: number): Promise<ApiResponse<ArticleItem>> {
     return genApiResponse(axios.get(url + '/article/' + articleId));
 }
+
+export function uploadArticleContentFile(file: File, articleId: number): Promise<ApiResponse<string>> {
+    let params = new FormData();
+    params.append('file', file);
+    params.append('articleId', articleId);
+    return genApiResponse(axios.post(url + '/article/upload', params, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }));
+}
+
+export function doSaveDraftArticle(articleItem: ArticleItem): Promise<ApiResponse<ArticleItem>> {
+    articleItem.status = '已保存'
+    return genApiResponse(axios.post('/draft-article', articleItem));
+}
