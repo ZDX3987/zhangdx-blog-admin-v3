@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {ListTableConfig} from "../../type/common/ListTableConfig.ts";
-import {ref, type Slot, watch} from "vue";
+import {nextTick, ref, type Slot, watch} from "vue";
 import {ElMessage, ElTable, type TableColumnCtx} from "element-plus";
 import {dateFormat} from "../../utils/moment-date.ts";
 
@@ -16,11 +16,15 @@ const props = defineProps({
   listTableConfig: {
     type: ListTableConfig
   },
-  selectionChangeFunc: Function
+  selectionChangeFunc: Function,
+  selectedRowKeySet: {
+    type: Array,
+    default: []
+  }
 })
 
 defineExpose({
-  selectRow
+  selectRows
 })
 
 watch(() => props.listTableConfig, (newConfig) => {
@@ -34,7 +38,7 @@ watch(() => props.listTableConfig?.tableData, (newTableData) => {
   }
 })
 
-function queryTableData(current: number, queryPageSize: number) {
+async function queryTableData(current: number, queryPageSize: number) {
   if (props.listTableConfig === undefined) {
     return
   }
@@ -42,13 +46,14 @@ function queryTableData(current: number, queryPageSize: number) {
   if (queryConfig === undefined || queryConfig.queryFunc === undefined) {
     return
   }
-  queryConfig.queryFunc(current, queryPageSize).then(res => {
-    let page = res.data
-    tableData.value = page.records
-    currentPage.value = page.current
-    pageSize.value = queryPageSize
-    total.value = page.total
-  }).catch(() => ElMessage.error('数据查询失败'))
+  let result = await queryConfig.queryFunc(current, queryPageSize)
+  let page = result.data
+  tableData.value = page.records
+  currentPage.value = page.current
+  pageSize.value = queryPageSize
+  total.value = page.total
+  await nextTick()
+  selectRows(props.selectedRowKeySet)
 }
 
 function tableDateFormat(row: any, column: TableColumnCtx<any>, cellValue: any) {
@@ -103,8 +108,16 @@ function currentChange(changePage: number) {
 }
 
 
-function selectRow(row: any) {
-  tableRef.value.toggleRowSelection(row, true)
+function selectRows(rowKeySet: number[]) {
+  if (!rowKeySet || rowKeySet.length === 0) {
+    return
+  }
+  tableData.value.forEach(item => {
+    if (rowKeySet.includes(item.id)) {
+      tableRef.value.toggleRowSelection(item, true)
+    }
+  })
+
 }
 
 </script>
@@ -117,7 +130,7 @@ function selectRow(row: any) {
     </el-button-group>
   </div>
   <div class="list_table_table">
-    <el-table ref="tableRef" :data="tableData" @selection-change="selectionChangeFunc">
+    <el-table ref="tableRef" :data="tableData" @selection-change="selectionChangeFunc" row-key="id">
       <el-table-column v-for="mapping in listTableConfig.tableMappings" :key="mapping" :prop="mapping.prop" :label="mapping.label"
                        :type="mapping.type" :width="mapping.width" :formatter="tableDateFormat"
                        :align="mapping.align">

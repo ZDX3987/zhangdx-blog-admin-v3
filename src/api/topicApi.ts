@@ -13,6 +13,17 @@ export function getTopicPages(current: number, pageSize: number): Promise<ApiRes
     return genApiResponse(axios.get(url + '/topic-page', {params}))
 }
 
-export function getTopicItem(topicId: number): Promise<ApiResponse<TopicItem>>  {
+export function getTopicItem(topicId: number): Promise<ApiResponse<TopicItem>> {
     return genApiResponse(axios.get(url + '/topic/' + topicId))
+}
+
+export function saveTopicItem(topicForm: TopicItem): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.post(url + '/topic', topicForm))
+}
+
+export function deleteTopicItem(topicId: number): Promise<ApiResponse<any>> {
+    let params = {
+        topicId
+    }
+    return genApiResponse(axios.delete(url + '/topic', {params}))
 }

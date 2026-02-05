@@ -10,7 +10,7 @@ import {
   ListTableDataMapping
 } from "../../type/common/ListTableConfig.ts";
 import {useRouter} from "vue-router";
-import {getTopicPages} from "../../api/topicApi.ts";
+import {deleteTopicItem, getTopicPages} from "../../api/topicApi.ts";
 
 const router = useRouter()
 const topicListTableConfig = ref<ListTableConfig>();
@@ -23,7 +23,7 @@ function defineTopicListTableConfig(): ListTableConfig {
   const config = new ListTableConfig()
   config.addConfig = new AddConfig('新建专栏', () => router.push({name: 'TopicAdd'}))
   config.editConfig = new EditConfig((id: number) => router.push({name: 'TopicEdit', params: {topicId: id}}))
-  config.deleteConfig = new DeleteConfig((id: number) => {})
+  config.deleteConfig = new DeleteConfig((id: number) => deleteTopicItem(id))
   config.queryConfig.queryFunc = (current, pageSize) => getTopicPages(current, pageSize)
   config.tableMappings = [
     ListTableDataMapping.defineIndexColumn(),

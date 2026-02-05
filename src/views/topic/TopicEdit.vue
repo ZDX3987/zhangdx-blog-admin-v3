@@ -9,7 +9,8 @@ import SelectArticleTable from "../../components/article/SelectArticleTable.vue"
 import ArticleSelectDialog from "../../components/dialog/ArticleSelectDialog.vue";
 import type {ArticleItem} from "../../type/ArticleItem.ts";
 import {useRoute} from "vue-router";
-import {getTopicItem} from "../../api/topicApi.ts";
+import {getTopicItem, saveTopicItem} from "../../api/topicApi.ts";
+import type {ApiResponse} from "../../api/axios.ts";
 
 const route = useRoute()
 const topicEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
@@ -44,8 +45,10 @@ function defineTopicEditFormConfig(formValue: TopicItem): EditFormConfig {
   return formConfig
 }
 
-function saveTopic() {
-  console.log(selectArticleList.value)
+function saveTopic(): Promise<ApiResponse<any>> {
+  let topicForm = topicEditFormConfig.value.formValue
+  topicForm.articleVOList = selectArticleList.value
+  return saveTopicItem(topicForm)
 }
 
 function showDialog() {

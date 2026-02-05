@@ -14,16 +14,19 @@ const props = defineProps({
     type: Array,
     default: undefined
   },
+  selectedArticleIdSet: {
+    type: Array,
+    default: []
+  }
 })
 const articleTypeEnum: any = {
   "原创": {color: "success"},
   "转载": {color: "warning"},
 }
-
 const selectedArticleList = ref<ArticleItem[]>([])
 
-watch(props, (newProps) => {
-  selectArticleListTableConfig.value.tableData = newProps.dataSource
+watch(() => props.dataSource, (newDataSource) => {
+  selectArticleListTableConfig.value.tableData = newDataSource
 })
 
 
@@ -32,8 +35,7 @@ onMounted(() => {
 })
 
 defineExpose({
-  getSelectedArticleList,
-  setSelectedArticleList
+  getSelectedArticleList
 })
 
 function defineSelectArticleListTableConfig(): ListTableConfig {
@@ -70,12 +72,6 @@ function selectionChange(newSelection: ArticleItem[]) {
 function getSelectedArticleList(): ArticleItem[] {
   return selectedArticleList.value
 }
-function setSelectedArticleList(newSelection: ArticleItem[]) {
-  selectedArticleList.value = newSelection
-  newSelection.forEach(item => {
-    listTableRef.value?.selectRow(item)
-  })
-}
 
 function deleteSelectArticle(articleId: number): Promise<any> {
   let oldTableData = selectArticleListTableConfig.value.tableData || []
@@ -86,7 +82,8 @@ function deleteSelectArticle(articleId: number): Promise<any> {
 </script>
 
 <template>
-  <ListTable ref="listTableRef" :listTableConfig="selectArticleListTableConfig" :selectionChangeFunc="selectionChange">
+  <ListTable ref="listTableRef" :listTableConfig="selectArticleListTableConfig" :selectionChangeFunc="selectionChange"
+    :selectedRowKeySet="selectedArticleIdSet">
     <template #articleType="scope">
       <el-tag :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{ scope.row.articleType }}
       </el-tag>

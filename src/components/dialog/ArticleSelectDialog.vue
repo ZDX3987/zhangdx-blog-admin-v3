@@ -14,6 +14,8 @@ watch(props, (newProps) => {
   dialogTableVisible.value = newProps.dialogTableVisible
 })
 
+const selectedArticleIdSet = ref<number[]>()
+
 defineExpose({
   setSelectedArticleList
 })
@@ -29,13 +31,14 @@ function closeDialog() {
 }
 
 function setSelectedArticleList(newSelection: ArticleItem[]) {
-  selectArticleTableRef.value?.setSelectedArticleList(newSelection)
+  selectedArticleIdSet.value = newSelection.map(item => item.id)
 }
 </script>
 
 <template>
-<el-dialog v-model="dialogTableVisible" title="请选择文章" width="800" @close="closeDialog">
-<SelectArticleTable ref="selectArticleTableRef"/>
+<el-dialog v-model="dialogTableVisible" title="请选择文章" width="800" @close="closeDialog"
+  :destroy-on-close="true">
+<SelectArticleTable ref="selectArticleTableRef" :selectedArticleIdSet="selectedArticleIdSet"/>
   <template #footer>
     <el-button type="primary" @click="confirmSelectArticle">确认</el-button>
   </template>
