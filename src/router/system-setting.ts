@@ -74,4 +74,10 @@ export  default [
             }
         ]
     },
+    {
+        path: 'settings/menu',
+        name: 'MenuManage',
+        component: () => import('../views/menu/MenuManage.vue'),
+        meta: {title: '菜单管理'}
+    }
 ]

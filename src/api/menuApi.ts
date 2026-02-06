@@ -10,3 +10,14 @@ export function getAdminMenu(): Promise<ApiResponse<MenuItem[]>> {
     }
     return genApiResponse(axios.get(url + '/role-menu', {params}))
 }
+
+export function getMenuListByType(menuType: string): Promise<ApiResponse<MenuItem[]>> {
+    let params = {
+        menuType
+    }
+    return genApiResponse(axios.get(url + '/list', {params}))
+}
+
+export function sortMenuList(menuList: MenuItem[]): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.put(url + '/sort', menuList))
+}
