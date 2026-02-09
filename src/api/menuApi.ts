@@ -21,3 +21,14 @@ export function getMenuListByType(menuType: string): Promise<ApiResponse<MenuIte
 export function sortMenuList(menuList: MenuItem[]): Promise<ApiResponse<any>> {
     return genApiResponse(axios.put(url + '/sort', menuList))
 }
+
+export function saveMenu(menuItem: MenuItem): Promise<ApiResponse<any>> {
+    return genApiResponse(axios.post(url, menuItem))
+}
+
+export function getMenuItemInfo(menuId: number): Promise<ApiResponse<MenuItem>> {
+    let params = {
+        menuId
+    }
+    return genApiResponse(axios.get(url + '/item-info', {params}))
+}

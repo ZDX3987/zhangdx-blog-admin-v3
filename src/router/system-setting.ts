@@ -78,6 +78,15 @@ export  default [
         path: 'settings/menu',
         name: 'MenuManage',
         component: () => import('../views/menu/MenuManage.vue'),
-        meta: {title: '菜单管理'}
+        meta: {title: '菜单管理'},
+        redirect: {name: 'MenuTree'},
+        children: [
+            {
+                path: 'tree',
+                name: 'MenuTree',
+                component: () => import('../views/menu/MenuTree.vue'),
+                meta: {title: '菜单列表'},
+            }
+        ]
     }
 ]
