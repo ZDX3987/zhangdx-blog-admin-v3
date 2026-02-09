@@ -8,6 +8,7 @@ export class EditFormItem {
     type: FormItemType = FormItemType.Input;
     width: number | undefined;
     rules: FormItemRule[] = [];
+    disabled: boolean = false;
 
 
     public static defineInputItem(label: string, model: string, width?: number, placeholder?: string): EditFormItem {
@@ -76,6 +77,10 @@ export class EditFormItem {
 
     public setWidth(width: number): EditFormItem {
         this.width = width
+        return this
+    }
+    public setDisabled(disabled: boolean): EditFormItem {
+        this.disabled = disabled
         return this
     }
 

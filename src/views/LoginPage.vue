@@ -85,7 +85,7 @@ function submitLogin(formEl: FormInstance | undefined) {
   padding: 2rem 5rem;
   border-radius: 5px;
   margin-top: 25vh;
-  height: 30vh;
+  min-height: 30vh;
 }
 
 .login_title {

@@ -57,8 +57,7 @@ function initAdminMenu() {
 <style scoped>
 .bg_color {
   background-color: #304156;
-  height: 100%;
-  min-height: 100vh;
+  height: 100vh;
 }
 .nav_title {
   margin: 0;

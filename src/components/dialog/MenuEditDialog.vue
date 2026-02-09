@@ -1,27 +1,24 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import {saveMenu} from "../../api/menuApi.ts";
 import {MenuItem} from "../../type/MenuItem.ts";
 import {EditFormConfig, EditFormItem, SubmitConfig} from "../../type/common/EditFormConfig.ts";
 import EditForm from "../common/EditForm.vue";
+import {ElMessage} from "element-plus";
 
-const menuEditFormConfig = ref<EditFormConfig>()
+const menuEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
 const dialogTableVisible = ref<boolean>(false)
-const props = defineProps({
-  menuItem: {
-    type: MenuItem,
-    default: () => {new MenuItem()}
-  }
-})
+const editParentMenu = ref<MenuItem>(new MenuItem())
 
-onMounted(() => {
-  menuEditFormConfig.value = defineMenuEditFormConfig(props.menuItem)
+defineExpose({
+  showDialog,
+  closeDialog
 })
 
 function defineMenuEditFormConfig(formValue: MenuItem) {
   const formConfig = new EditFormConfig()
   formConfig.formValue = formValue
-  formConfig.wrapperWidthPercent = 30
+  formConfig.wrapperWidthPercent = 100
   formConfig.formItems = [
     EditFormItem.defineInputItem('名称', 'name').setPlaceholder('请输入菜单名称')
         .addRule({required: true, message: '请输入菜单名称', trigger: 'blur'}),
@@ -31,20 +28,41 @@ function defineMenuEditFormConfig(formValue: MenuItem) {
         .addRule({required: true, message: '请输入菜单路由', trigger: 'blur'}),
     EditFormItem.defineInputItem('组件', 'componentName').setPlaceholder('请输入组件名')
         .addRule({required: true, message: '请输入组件名', trigger: 'blur'}),
-    EditFormItem.defineInputItem('父菜单', 'parentMenu.text').setPlaceholder('请选择父菜单')
-        .addRule({required: true, message: '请选择父菜单', trigger: 'blur'}),
+    EditFormItem.defineSlotItem('父菜单', 'parentMenuInput'),
     EditFormItem.defineInputItem('图标', 'iconClass').setPlaceholder('请输入菜单图标类名'),
     EditFormItem.defineSwitchItem('启用', 'status')
   ]
-  formConfig.submitConfig = new SubmitConfig(saveMenu, '保存')
+  formConfig.submitConfig = new SubmitConfig(submitEditForm, '保存')
   formConfig.openValidate()
   return formConfig;
+}
+
+function submitEditForm(formValue: MenuItem) {
+  saveMenu(formValue).then(() => {
+    ElMessage.success('保存成功')
+  }).catch(error => ElMessage.error(error))
+  closeDialog()
+}
+
+function showDialog(menuEditItem: MenuItem, parentMenu?: MenuItem) {
+  menuEditFormConfig.value = defineMenuEditFormConfig(menuEditItem)
+  if (parentMenu) {
+    editParentMenu.value = parentMenu
+  }
+  dialogTableVisible.value = true
+}
+function closeDialog() {
+  dialogTableVisible.value = false
 }
 </script>
 
 <template>
-<el-dialog v-model="dialogTableVisible" title="请编辑菜单" width="600" @close="">
-  <EditForm :editFormConfig="menuEditFormConfig"/>
+<el-dialog v-model="dialogTableVisible" title="请编辑菜单" width="600" @close="closeDialog">
+  <EditForm :editFormConfig="menuEditFormConfig">
+    <template #parentMenuInput>
+      <el-input v-model="editParentMenu.text" disabled/>
+    </template>
+  </EditForm>
 </el-dialog>
 </template>
 

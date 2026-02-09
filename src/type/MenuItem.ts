@@ -5,5 +5,6 @@ export class MenuItem {
     router: string;
     iconClass: string;
     childrenMenu: MenuItem[];
-
+    status: number
+    parentMenu: MenuItem | undefined;
 }

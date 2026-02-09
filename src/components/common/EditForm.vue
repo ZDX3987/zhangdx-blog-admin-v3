@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {EditFormConfig, FormItemType} from "../../type/common/EditFormConfig.ts";
-import {ref, type Slot, watch} from "vue";
+import {onMounted, ref, type Slot, watch} from "vue";
 import type {FormInstance} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
 
@@ -9,6 +9,10 @@ const props = defineProps({
   editFormConfig: {
     type: EditFormConfig
   },
+})
+
+onMounted(() => {
+  realFormValue.value = props.editFormConfig?.formValue
 })
 
 watch(props, (newVal) => {
@@ -44,7 +48,8 @@ function resetForm() {
   <el-form :model="realFormValue" label-width="auto" ref="formRef" :rules="editFormConfig?.rules" :inline="editFormConfig?.inline">
     <slot v-if="editFormConfig?.beforeSlotTemplate" :name="editFormConfig.beforeSlotTemplate.default"/>
     <el-form-item v-for="formItem in editFormConfig?.formItems" :key="formItem" :label="formItem.label" :prop="formItem.model">
-      <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder">
+      <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder"
+        :disabled="formItem.disabled">
       </el-input>
       <el-select v-else-if="formItem.isSelect()" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder"
         :remote="formItem.isRemoteMode" filterable :remote-method="(queryName: string) => formItem.selectRemoteSearch(queryName)"
