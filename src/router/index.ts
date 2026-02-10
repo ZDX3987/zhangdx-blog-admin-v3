@@ -193,6 +193,33 @@ const routes = [
                     }
                 ]
             },
+            {
+                path: 'settings/friend-links',
+                name: 'FriendshipLinkManage',
+                component: () => import('../views/friendship-link/FriendshipLinkManage.vue'),
+                meta: {title: '友链管理'},
+                redirect: {name: 'FriendshipLinkList'},
+                children: [
+                    {
+                        path: 'list',
+                        name: 'FriendshipLinkList',
+                        component: () => import('../views/friendship-link/FriendshipLinkList.vue'),
+                        meta: {title: '友链列表'},
+                    },
+                    {
+                        path: 'add',
+                        name: 'FriendshipLinkAdd',
+                        component: () => import('../views/friendship-link/FriendshipLinkEdit.vue'),
+                        meta: {title: '新增友链'},
+                    },
+                    {
+                        path: 'edit/:linkId',
+                        name: 'FriendshipLinkEdit',
+                        component: () => import('../views/friendship-link/FriendshipLinkEdit.vue'),
+                        meta: {title: '编辑友链'},
+                    }
+                ]
+            },
             ...systemSettingRoute
         ]
     }

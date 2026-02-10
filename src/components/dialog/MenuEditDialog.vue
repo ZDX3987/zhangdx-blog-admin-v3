@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {saveMenu} from "../../api/menuApi.ts";
 import {MenuItem} from "../../type/MenuItem.ts";
 import {EditFormConfig, EditFormItem, SubmitConfig} from "../../type/common/EditFormConfig.ts";
 import EditForm from "../common/EditForm.vue";
-import {ElMessage} from "element-plus";
 
 const menuEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
 const dialogTableVisible = ref<boolean>(false)

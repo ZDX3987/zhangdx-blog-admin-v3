@@ -70,6 +70,16 @@ export class EditFormItem {
         return item
     }
 
+    public static defineTextarea(label: string, model: string, width?: number, placeholder?: string): EditFormItem {
+        const item = new EditFormItem()
+        item.type = FormItemType.Textarea
+        item.label = label
+        item.model = model
+        item.width = width || 100
+        item.placeholder = placeholder || ''
+        return item
+    }
+
     public setPlaceholder(placeholder: string): EditFormItem {
         this.placeholder = placeholder
         return this
@@ -238,7 +248,8 @@ export enum FormItemType {
     DatePicker,
     DateTimePicker,
     Transfer,
-    Slot
+    Slot,
+    Textarea
 }
 
 export class FormOption {

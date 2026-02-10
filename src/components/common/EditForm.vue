@@ -44,39 +44,50 @@ function resetForm() {
 </script>
 
 <template>
-<div class="edit_form_wrapper" :style="{width: editFormConfig?.wrapperWidthPercent + '%'}">
-  <el-form :model="realFormValue" label-width="auto" ref="formRef" :rules="editFormConfig?.rules" :inline="editFormConfig?.inline">
-    <slot v-if="editFormConfig?.beforeSlotTemplate" :name="editFormConfig.beforeSlotTemplate.default"/>
-    <el-form-item v-for="formItem in editFormConfig?.formItems" :key="formItem" :label="formItem.label" :prop="formItem.model">
-      <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder"
-        :disabled="formItem.disabled">
-      </el-input>
-      <el-select v-else-if="formItem.isSelect()" v-model="realFormValue[formItem.model]" :placeholder="formItem.placeholder"
-        :remote="formItem.isRemoteMode" filterable :remote-method="(queryName: string) => formItem.selectRemoteSearch(queryName)"
-        :multiple="formItem.multiple">
-        <el-option v-for="option in formItem.options" :key="option.value" :label="option.label" :value="option.value">
-        </el-option>
-      </el-select>
-      <el-switch v-else-if="formItem.isSwitch()" v-model="realFormValue[formItem.model]"
-                 :inactive-value="formItem.switchValue[0]" :active-value="formItem.switchValue[1]">
-      </el-switch>
-      <el-transfer v-else-if="formItem.isTransfer()" :data="formItem.data" v-model="realFormValue[formItem.model]"
-        :titles="formItem.title" :button-texts="formItem.buttonText">
-      </el-transfer>
-      <el-upload v-else-if="formItem.isUpload()" :list-type="formItem.listType">
-        <img v-if="realFormValue[formItem.model]" :src="realFormValue[formItem.model]" alt=""/>
-        <el-icon v-else><Plus/></el-icon>
-      </el-upload>
-      <slot v-else-if="formItem.isSlot()" :name="formItem.slot?.default"/>
-    </el-form-item>
-    <slot v-if="editFormConfig?.afterSlotTemplate" :name="editFormConfig.afterSlotTemplate.default"/>
-    <el-form-item>
-      <el-button v-if="editFormConfig?.submitConfig" :type="editFormConfig?.submitConfig.type" @click="submitForm">
-        {{editFormConfig?.submitConfig.btnText}}</el-button>
-      <el-button v-if="editFormConfig?.resettable" @click="resetForm">重置</el-button>
-    </el-form-item>
-  </el-form>
-</div>
+  <div class="edit_form_wrapper" :style="{width: editFormConfig?.wrapperWidthPercent + '%'}">
+    <el-form :model="realFormValue" label-width="auto" ref="formRef" :rules="editFormConfig?.rules"
+             :inline="editFormConfig?.inline">
+      <slot v-if="editFormConfig?.beforeSlotTemplate" :name="editFormConfig.beforeSlotTemplate.default"/>
+      <el-form-item v-for="formItem in editFormConfig?.formItems" :key="formItem" :label="formItem.label"
+                    :prop="formItem.model">
+        <el-input v-if="formItem.type === FormItemType.Input" v-model="realFormValue[formItem.model]"
+                  :placeholder="formItem.placeholder"
+                  :disabled="formItem.disabled">
+        </el-input>
+        <el-select v-else-if="formItem.isSelect()" v-model="realFormValue[formItem.model]"
+                   :placeholder="formItem.placeholder"
+                   :remote="formItem.isRemoteMode" filterable
+                   :remote-method="(queryName: string) => formItem.selectRemoteSearch(queryName)"
+                   :multiple="formItem.multiple">
+          <el-option v-for="option in formItem.options" :key="option.value" :label="option.label" :value="option.value">
+          </el-option>
+        </el-select>
+        <el-switch v-else-if="formItem.isSwitch()" v-model="realFormValue[formItem.model]"
+                   :inactive-value="formItem.switchValue[0]" :active-value="formItem.switchValue[1]">
+        </el-switch>
+        <el-transfer v-else-if="formItem.isTransfer()" :data="formItem.data" v-model="realFormValue[formItem.model]"
+                     :titles="formItem.title" :button-texts="formItem.buttonText">
+        </el-transfer>
+        <el-upload v-else-if="formItem.isUpload()" :list-type="formItem.listType">
+          <img v-if="realFormValue[formItem.model]" :src="realFormValue[formItem.model]" alt=""/>
+          <el-icon v-else>
+            <Plus/>
+          </el-icon>
+        </el-upload>
+        <slot v-else-if="formItem.isSlot()" :name="formItem.slot?.default"/>
+        <el-input v-else-if="formItem.type === FormItemType.Textarea" v-model="realFormValue[formItem.model]"
+                  :placeholder="formItem.placeholder"
+                  :disabled="formItem.disabled" type="textarea" autosize :autosize="{ minRows: 2, maxRows: 4 }"/>
+      </el-form-item>
+      <slot v-if="editFormConfig?.afterSlotTemplate" :name="editFormConfig.afterSlotTemplate.default"/>
+      <el-form-item>
+        <el-button v-if="editFormConfig?.submitConfig" :type="editFormConfig?.submitConfig.type" @click="submitForm">
+          {{ editFormConfig?.submitConfig.btnText }}
+        </el-button>
+        <el-button v-if="editFormConfig?.resettable" @click="resetForm">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <style scoped>
