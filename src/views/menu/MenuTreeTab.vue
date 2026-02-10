@@ -45,6 +45,26 @@ function editMenu(editMenuItem: MenuItem) {
 function addChildMenu(parentMenu: MenuItem) {
   menuEditDialogRef.value?.showDialog(new MenuItem(), parentMenu)
 }
+
+function doSaveEditMenu(editMenuItem: MenuItem) {
+  const menuId = editMenuItem.id
+  if (!menuId) {
+    editMenuItem.type = props.menuType === 'client' ? 1 : 2
+    const hasParentMenu = !!editMenuItem.parentMenu
+    if (hasParentMenu) {
+      editMenuItem.parentId = editMenuItem.parentMenu?.id
+      const allMenuList: MenuItem[] = menuList.value || []
+      const childMenuList: MenuItem[] = allMenuList.filter(item => item.id === editMenuItem.parentId)
+          .flatMap(item => item.childrenMenu).reverse()
+      editMenuItem.seqNum = childMenuList.length === 0 ? 1 : childMenuList[0].seqNum + 1
+    }
+    editMenuItem.level = hasParentMenu ? 2 : 1
+  }
+  console.log(editMenuItem)
+  // saveMenu(editMenuItem).then(() => {
+  //   ElMessage.success('保存成功')
+  // }).catch(error => ElMessage.error(error))
+}
 </script>
 
 <template>
@@ -76,7 +96,7 @@ function addChildMenu(parentMenu: MenuItem) {
       </template>
     </el-tree>
   </div>
-  <MenuEditDialog ref="menuEditDialogRef"/>
+  <MenuEditDialog ref="menuEditDialogRef" @submitEditMenu="doSaveEditMenu"/>
 </template>
 
 <style scoped>
