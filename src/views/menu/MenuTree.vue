@@ -3,8 +3,8 @@
 import MenuTreeTab from "./MenuTreeTab.vue";
 
 const menuTabs = [
-  {label: '客户端菜单', name: 'client'},
-  {label: '管理端菜单', name: 'admin'},
+  {label: '客户端菜单', name: 'CLIENT'},
+  {label: '管理端菜单', name: 'ADMIN'},
 ]
 </script>
 

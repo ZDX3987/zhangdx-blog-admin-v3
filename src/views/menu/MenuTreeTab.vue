@@ -3,7 +3,7 @@
 import {DCaret} from "@element-plus/icons-vue";
 import {onMounted, ref} from "vue";
 import {MenuItem} from "../../type/MenuItem.ts";
-import {getMenuListByType, sortMenuList} from "../../api/menuApi.ts";
+import {deleteMenuItem, getMenuListByType, saveMenu, sortMenuList} from "../../api/menuApi.ts";
 import {ElMessage} from "element-plus";
 import MenuEditDialog from "../../components/dialog/MenuEditDialog.vue";
 
@@ -39,9 +39,11 @@ function sortMenu() {
 function addTopLevelMenu() {
   menuEditDialogRef.value?.showDialog(new MenuItem())
 }
+
 function editMenu(editMenuItem: MenuItem) {
   menuEditDialogRef.value?.showDialog(editMenuItem)
 }
+
 function addChildMenu(parentMenu: MenuItem) {
   menuEditDialogRef.value?.showDialog(new MenuItem(), parentMenu)
 }
@@ -49,21 +51,36 @@ function addChildMenu(parentMenu: MenuItem) {
 function doSaveEditMenu(editMenuItem: MenuItem) {
   const menuId = editMenuItem.id
   if (!menuId) {
-    editMenuItem.type = props.menuType === 'client' ? 1 : 2
+    editMenuItem.type = props.menuType === 'CLIENT' ? 1 : 2
     const hasParentMenu = !!editMenuItem.parentMenu
+    const allMenuList: MenuItem[] = menuList.value || []
     if (hasParentMenu) {
       editMenuItem.parentId = editMenuItem.parentMenu?.id
-      const allMenuList: MenuItem[] = menuList.value || []
       const childMenuList: MenuItem[] = allMenuList.filter(item => item.id === editMenuItem.parentId)
           .flatMap(item => item.childrenMenu).reverse()
-      editMenuItem.seqNum = childMenuList.length === 0 ? 1 : childMenuList[0].seqNum + 1
+      editMenuItem.seqNum = childMenuList.length + 1
+    } else {
+      editMenuItem.seqNum = allMenuList.length + 1
     }
     editMenuItem.level = hasParentMenu ? 2 : 1
+    if (!editMenuItem.status) {
+      editMenuItem.status = 0
+    }
   }
-  console.log(editMenuItem)
-  // saveMenu(editMenuItem).then(() => {
-  //   ElMessage.success('保存成功')
-  // }).catch(error => ElMessage.error(error))
+  saveMenu(editMenuItem).then(() => {
+    ElMessage.success('保存成功')
+    getMenuList()
+  }).catch(error => ElMessage.error(error))
+}
+
+function deleteMenu(menu: MenuItem) {
+  deleteMenuItem(menu.id).then(() => {
+    ElMessage.success('删除成功')
+    getMenuList()
+  }).catch(error => ElMessage.error(error))
+}
+function changeMenuStatus(menu: MenuItem) {
+  doSaveEditMenu(menu)
 }
 </script>
 
@@ -83,15 +100,21 @@ function doSaveEditMenu(editMenuItem: MenuItem) {
       <template #default="{ node, data }">
         <div class="menu-tree-node">
           <span class="menu-node-text">{{ data.text }}</span>
-          <span>
-          <el-link class="menu-node-link" v-if="data.level < 2" type="primary" @click="addChildMenu(data)">添加子菜单</el-link>
-          <el-link class="menu-node-link" type="primary" @click="editMenu(data)">编辑</el-link>
-            <el-popconfirm :title="data.level === 1 && data.childrenMenu.length > 0 ? '删除一级菜单将会同时删除子菜单，确认删除吗？' : '确认删除这个菜单吗？'">
+          <div>
+            <el-switch class="menu-status-btn" size="small" v-model="data.status" :active-value="1"
+                       :inactive-value="0" @click="changeMenuStatus(data)"/>
+            <el-link class="menu-node-link" v-if="data.level < 2" type="primary" @click="addChildMenu(data)">
+              添加子菜单
+            </el-link>
+            <el-link class="menu-node-link" type="primary" @click="editMenu(data)">编辑</el-link>
+            <el-popconfirm
+                :title="data.level === 1 && data.childrenMenu.length > 0 ? '删除一级菜单将会同时删除子菜单，确认删除吗？' : '确认删除这个菜单吗？'"
+                @confirm="deleteMenu(data)">
               <template #reference>
                 <el-link slot="reference" type="danger">删除</el-link>
               </template>
             </el-popconfirm>
-        </span>
+          </div>
         </div>
       </template>
     </el-tree>
@@ -103,14 +126,21 @@ function doSaveEditMenu(editMenuItem: MenuItem) {
 .menu-edit-btn {
   margin-bottom: 20px;
 }
+
 .menu-tree-node {
-  width: 50%;
-  text-align: justify;
+  width: 20%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .menu-node-text {
   margin-right: 50px;
 }
+
+.menu-status-btn {
+  margin-right: 50px;
+}
+
 .menu-node-link {
   margin-right: 10px;
 }

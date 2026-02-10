@@ -32,3 +32,10 @@ export function getMenuItemInfo(menuId: number): Promise<ApiResponse<MenuItem>> 
     }
     return genApiResponse(axios.get(url + '/item-info', {params}))
 }
+
+export function deleteMenuItem(menuId: number): Promise<ApiResponse<any>> {
+    let params = {
+        delMenuId: menuId
+    }
+    return genApiResponse(axios.delete(url, {params}))
+}
