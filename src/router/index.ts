@@ -226,8 +226,19 @@ const routes = [
                     }
                 ]
             },
-            ...systemSettingRoute
+            ...systemSettingRoute,
+            {
+                path: 'error/:errorCode',
+                name: 'Error',
+                component: () => import('../views/common/Error.vue'),
+                meta: {title: '出错了......'},
+            }
         ]
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'UnKnown',
+        redirect: {name: 'Error', params: {errorCode: 404}}
     }
 ]
 

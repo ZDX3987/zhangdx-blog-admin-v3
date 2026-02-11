@@ -39,15 +39,14 @@ export interface ApiResponse<T> {
 function processCommonResponseCode(responseData: ApiResponse<any>) {
     const code = responseData.code;
     switch (code) {
-        case 404:
-            ElMessage.error(responseData.msg)
-            Router.push('/error');
-            break;
+        case 200:
+            break
         case 401:
             ElMessage.error(responseData.msg)
             Router.push('/login')
             break
         default:
+            routerPushError(code)
             break;
     }
 }
@@ -70,16 +69,21 @@ function errorHandle(response: AxiosResponse<any>) {
         } else {
             ElMessage.error('系统出现错误，请联系管理员')
         }
+        routerPushError(status)
         return;
     }
     switch (status) {
         case 401:
-            Router.push({name: 'Login'});
+            Router.push({name: 'Login'})
             break;
         default:
-            Router.push('/error');
+            routerPushError(status)
             break;
     }
+}
+
+function routerPushError(errorCode: number) {
+    Router.push({name: 'Error', params: {errorCode: errorCode}})
 }
 
 export default service
