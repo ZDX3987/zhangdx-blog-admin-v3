@@ -49,8 +49,11 @@ function submitLogin(formEl: FormInstance | undefined) {
 </script>
 
 <template>
+  <div class="login-logo-content">
+    <el-image src="http://file.zhangdx.cn/asserts/icon.svg"/>
+  </div>
   <el-row type="flex" justify="center">
-    <el-col :xl="8" :md="12">
+    <el-col :xl="6" :md="10">
       <div class="login_content">
         <h2 class="login_title">登录</h2>
         <div class="login_form_content">
@@ -79,15 +82,21 @@ function submitLogin(formEl: FormInstance | undefined) {
 </template>
 
 <style scoped>
+.login-logo-content {
+  width: 80px;
+  height: 80px;
+  top: 3rem;
+  left: 5rem;
+  position: absolute;
+}
 .login_content {
   background-color: rgba(255, 255, 255, 0.2);
   position: relative;
   padding: 2rem 5rem;
   border-radius: 5px;
-  margin-top: 25vh;
-  min-height: 30vh;
+  margin-top: 25rem;
+  min-height: 25rem;
 }
-
 .login_title {
   color: rgb(176, 183, 189);
   text-align: center;
