@@ -88,8 +88,8 @@ function deleteArticle(row: ArticleItem) {
     ElMessage.success('删除成功')
   })
 }
-function tableDateFormat(row: ArticleItem, column: TableColumnCtx<any>, cellValue: any) {
-  return dateFormat(cellValue)
+function tableDateFormat(row: ArticleItem, column: TableColumnCtx<any>, cellValue: Date) {
+  return cellValue ? dateFormat(cellValue) : '/'
 }
 
 function sizeChange(changePageSize: number) {

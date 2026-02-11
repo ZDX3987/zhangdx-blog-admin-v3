@@ -19,6 +19,27 @@ export class ArticleItem {
     readCount: number;
     commentCount: number;
     author: Author;
-    categories: CategoryItem[]
+    categories: CategoryItem[];
+    extraData: ArticleExtraData
+}
 
+export class ArticleExtraData {
+    previewConfig: PreviewConfig;
+
+    constructor(previewConfig: PreviewConfig) {
+        this.previewConfig = previewConfig
+    }
+}
+
+export class PreviewConfig {
+    vditorPreview: VditorPreview
+
+    public setVditorPreview(preview: VditorPreview): PreviewConfig {
+        this.vditorPreview = preview
+        return this
+    }
+}
+
+export interface VditorPreview {
+    hlStyle: string;
 }

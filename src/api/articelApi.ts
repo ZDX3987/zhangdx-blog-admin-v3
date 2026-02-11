@@ -53,5 +53,17 @@ export function uploadArticleContentFile(file: File, articleId: number): Promise
 
 export function doSaveDraftArticle(articleItem: ArticleItem): Promise<ApiResponse<ArticleItem>> {
     articleItem.status = '已保存'
-    return genApiResponse(axios.post('/draft-article', articleItem));
+    articleItem.articleType = '原创'
+    return genApiResponse(axios.post(url + '/draft-article', articleItem));
+}
+
+export function doSaveArticle(file: File, article: ArticleItem) {
+    let form = new FormData();
+    form.append("file", file);
+    form.append('articleJSON', JSON.stringify(article));
+    return genApiResponse(axios.put(url + '/article', form, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }))
 }
