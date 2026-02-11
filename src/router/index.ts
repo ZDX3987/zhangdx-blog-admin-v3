@@ -55,6 +55,12 @@ const routes = [
                         name: 'DraftBox',
                         component: () => import('../views/article/DraftBox.vue'),
                         meta: {title: '草稿箱'},
+                    },
+                    {
+                        path: 'preview/:articleId',
+                        name: 'ArticlePreview',
+                        component: () => import('../views/article/ArticlePreview.vue'),
+                        meta: {title: '预览文章'},
                     }
                 ]
             },

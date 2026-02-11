@@ -8,6 +8,7 @@ import {dateFormat} from "../../utils/moment-date.ts";
 import {ElMessage, type TableColumnCtx} from "element-plus";
 import {useRouter} from "vue-router";
 import {downloadMdFile} from "../../utils/file-util.ts";
+import ArticlePreview from "./ArticlePreview.vue";
 
 const status: any = {
   "已保存": {name: "已保存", value: 0, color: ""},
@@ -98,6 +99,10 @@ function sizeChange(changePageSize: number) {
 function currentChange(changePage: number) {
   queryArticle(changePage, pageSize.value)
 }
+
+function previewArticle(row: ArticleItem) {
+  router.push({name: 'ArticlePreview', params: {articleId: row.id}})
+}
 </script>
 
 <template>
@@ -123,7 +128,7 @@ function currentChange(changePage: number) {
     </el-form>
   </div>
   <div class="article_list_table">
-    <el-table :data="articleList">
+    <el-table :data="articleList" @row-dblclick="previewArticle">
       <el-table-column label="序号" type="index" align="center" width="80"/>
       <el-table-column label="标题" prop="title" align="left" width="300"/>
       <el-table-column label="作者" prop="author.nickname" align="center" width="180"/>
