@@ -58,7 +58,7 @@ function resetForm() {
                    :placeholder="formItem.placeholder"
                    :remote="formItem.isRemoteMode" filterable
                    :remote-method="(queryName: string) => formItem.selectRemoteSearch(queryName)"
-                   :multiple="formItem.multiple">
+                   :multiple="formItem.multiple" @change="formItem.selectedChangeFunc">
           <el-option v-for="option in formItem.options" :key="option.value" :label="option.label" :value="option.value">
           </el-option>
         </el-select>
@@ -77,7 +77,9 @@ function resetForm() {
         <slot v-else-if="formItem.isSlot()" :name="formItem.slot?.default"/>
         <el-input v-else-if="formItem.type === FormItemType.Textarea" v-model="realFormValue[formItem.model]"
                   :placeholder="formItem.placeholder"
-                  :disabled="formItem.disabled" type="textarea" autosize :autosize="{ minRows: 2, maxRows: 4 }"/>
+                  :disabled="formItem.disabled" type="textarea" :autosize="{ minRows: 2 }"/>
+        <el-tree-select v-else-if="formItem.isTreeSelect()" v-model="realFormValue[formItem.model]"
+                        :data="formItem.data"></el-tree-select>
       </el-form-item>
       <slot v-if="editFormConfig?.afterSlotTemplate" :name="editFormConfig.afterSlotTemplate.default"/>
       <el-form-item>

@@ -21,7 +21,7 @@ export class EditFormItem {
         return item
     }
 
-    public static defineSelectItem(label: string, model: string, options: FormOption[], remoteFunc?: (keyword: string) => Promise<FormOption[]>, isMultiple?: boolean): EditFormItem {
+    public static defineSelectItem(label: string, model: string, options: FormOption[], remoteFunc?: (keyword: string) => Promise<FormOption[]>, isMultiple?: boolean): SelectFormItem {
         const item = new SelectFormItem()
         item.label = label
         item.model = model
@@ -35,7 +35,7 @@ export class EditFormItem {
         return item
     }
 
-    public static defineSwitchItem(label: string, model: string): EditFormItem {
+    public static defineSwitchItem(label: string, model: string): SwitchFormItem {
         const item = new SwitchFormItem()
         item.label = label
         item.model = model
@@ -56,14 +56,14 @@ export class EditFormItem {
         return item
     }
 
-    public static defineUploadItem(label: string, model: string): EditFormItem {
+    public static defineUploadItem(label: string, model: string): UploadFormItem {
         const item = new UploadFormItem()
         item.label = label
         item.model = model
         return item
     }
 
-    public static defineSlotItem(label: string, slotName: string): EditFormItem {
+    public static defineSlotItem(label: string, slotName: string): SlotFormItem {
         const item = new SlotFormItem()
         item.label = label
         item.slot = new SlotType(slotName)
@@ -80,6 +80,16 @@ export class EditFormItem {
         return item
     }
 
+    public static defineTreeSelectItem(label: string, model: string, data: FormOption[]): TreeSelectFormItem {
+        const item = new TreeSelectFormItem()
+        item.label = label
+        item.model = model
+        if (data && data.length > 0) {
+            item.data = data
+        }
+        return item
+    }
+
     public setPlaceholder(placeholder: string): EditFormItem {
         this.placeholder = placeholder
         return this
@@ -89,6 +99,7 @@ export class EditFormItem {
         this.width = width
         return this
     }
+
     public setDisabled(disabled: boolean): EditFormItem {
         this.disabled = disabled
         return this
@@ -102,9 +113,11 @@ export class EditFormItem {
     public isSelect(): this is SelectFormItem {
         return this.type === FormItemType.Select && (this instanceof SelectFormItem)
     }
+
     public isSwitch(): this is SwitchFormItem {
         return this.type === FormItemType.Switch && (this instanceof SwitchFormItem)
     }
+
     public isTransfer(): this is TransferFormItem {
         return this.type === FormItemType.Transfer && (this instanceof TransferFormItem)
     }
@@ -116,12 +129,19 @@ export class EditFormItem {
     public isSlot(): this is SlotFormItem {
         return this.type === FormItemType.Slot && (this instanceof SlotFormItem)
     }
+
+    public isTreeSelect(): this is TreeSelectFormItem {
+        return this.type === FormItemType.TreeSelect && (this instanceof TreeSelectFormItem)
+    }
 }
+
 class SelectFormItem extends EditFormItem {
     options: FormOption[] = [];
     remoteFunc: (keyword: string) => Promise<FormOption[]>;
     isRemoteMode: boolean = false;
     multiple: boolean = false;
+    selectedChangeFunc: (value: any) => void = () => {};
+
     constructor() {
         super();
         this.type = FormItemType.Select
@@ -135,29 +155,40 @@ class SelectFormItem extends EditFormItem {
         }
     }
 
+    public addChangeFunction(selectedChangeFunc: (value: any) => void): SelectFormItem {
+        this.selectedChangeFunc = selectedChangeFunc
+        return this
+    }
+
     public setMultiple(isMultiple: boolean): SelectFormItem {
         this.multiple = isMultiple
         return this
     }
 }
+
 class SwitchFormItem extends EditFormItem {
-    switchValue: number[] = [0,1];
+    switchValue: number[] = [0, 1];
+
     constructor() {
         super();
         this.type = FormItemType.Switch
     }
 }
+
 class TransferFormItem extends EditFormItem {
     data: any[] = [];
     title: string[] = []
     buttonText: string[] = []
+
     constructor() {
         super();
         this.type = FormItemType.Transfer
     }
 }
+
 class UploadFormItem extends EditFormItem {
     listType: string = 'picture-card'
+
     constructor() {
         super();
         this.type = FormItemType.Upload
@@ -166,9 +197,19 @@ class UploadFormItem extends EditFormItem {
 
 class SlotFormItem extends EditFormItem {
     slot: SlotType | undefined
+
     constructor() {
         super();
         this.type = FormItemType.Slot
+    }
+}
+
+class TreeSelectFormItem extends EditFormItem {
+    data: FormOption[] = [];
+
+    constructor() {
+        super();
+        this.type = FormItemType.TreeSelect
     }
 }
 
@@ -231,6 +272,28 @@ export class EditFormConfig {
         return this
     }
 
+    /**
+     * 动态添加表单组件
+     * @param formItem
+     */
+    public addFormItem(formItem: EditFormItem): EditFormConfig {
+        this.formItems.push(formItem)
+        return this
+    }
+
+    public insertFormItem(index: number, formItem: EditFormItem): EditFormConfig {
+        this.formItems.splice(index, 0, formItem)
+        return this
+    }
+
+    public removeFormItem(formLabel: string): number {
+        const removeIndex = this.formItems.findIndex(item => item.label === formLabel)
+        if (removeIndex !== -1) {
+            this.formItems.splice(removeIndex, 1)
+        }
+        return removeIndex
+    }
+
 }
 
 // @ts-ignore
@@ -249,13 +312,15 @@ export enum FormItemType {
     DateTimePicker,
     Transfer,
     Slot,
-    Textarea
+    Textarea,
+    TreeSelect
 }
 
 export class FormOption {
     label: string;
     value: any;
     key: any;
+    children: FormOption[];
 
     public constructor(label: string, value: any, key?: any) {
         this.label = label

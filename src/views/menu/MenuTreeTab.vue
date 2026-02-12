@@ -103,9 +103,7 @@ function changeMenuStatus(menu: MenuItem) {
           <div>
             <el-switch class="menu-status-btn" size="small" v-model="data.status" :active-value="1"
                        :inactive-value="0" @click="changeMenuStatus(data)"/>
-            <el-link class="menu-node-link" v-if="data.level < 2" type="primary" @click="addChildMenu(data)">
-              添加子菜单
-            </el-link>
+            <el-link class="menu-node-link" v-if="data.level < 2" type="primary" @click="addChildMenu(data)">添加子菜单</el-link>
             <el-link class="menu-node-link" type="primary" @click="editMenu(data)">编辑</el-link>
             <el-popconfirm
                 :title="data.level === 1 && data.childrenMenu.length > 0 ? '删除一级菜单将会同时删除子菜单，确认删除吗？' : '确认删除这个菜单吗？'"
