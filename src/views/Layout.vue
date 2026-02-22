@@ -62,6 +62,7 @@ function getAuthUserInfo() {
 .el-main {
   padding: 0;
   margin:10px;
+  margin-top: 0;
   height: 90vh;
   background-color: #FFF;
 }
