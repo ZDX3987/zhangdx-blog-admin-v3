@@ -12,3 +12,8 @@ export class MenuItem {
     level: number;
     type: number;
 }
+
+export enum MenuItemType {
+    CLIENT = 'CLIENT',
+    ADMIN = 'ADMIN',
+}

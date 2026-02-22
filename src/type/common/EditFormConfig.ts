@@ -327,4 +327,9 @@ export class FormOption {
         this.value = value
         this.key = key || value
     }
+
+    public setChildren(children: FormOption[]): FormOption {
+        this.children = children
+        return this
+    }
 }

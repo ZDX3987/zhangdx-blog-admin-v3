@@ -60,7 +60,9 @@ function getAuthUserInfo() {
   padding: 0;
 }
 .el-main {
-  max-height: 95vh;
-  padding: 10px;
+  padding: 0;
+  margin:10px;
+  height: 90vh;
+  background-color: #FFF;
 }
 </style>

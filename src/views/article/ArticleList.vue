@@ -131,7 +131,7 @@ function previewArticle(row: ArticleItem) {
     <el-table :data="articleList" @row-dblclick="previewArticle">
       <el-table-column label="序号" type="index" align="center" width="80"/>
       <el-table-column label="标题" prop="title" align="left" width="300"/>
-      <el-table-column label="作者" prop="author.nickname" align="center" width="180"/>
+      <el-table-column label="作者" prop="author.nickname" align="center" width="150"/>
       <el-table-column label="状态" prop="status" align="center" width="100">
         <template #default="scope">
           <el-tag  :type="status[scope.row.status].color">{{scope.row.status}}</el-tag>
@@ -159,7 +159,7 @@ function previewArticle(row: ArticleItem) {
       </el-table-column>
       <el-table-column label="发布时间" prop="publishDate" :formatter="tableDateFormat" sortable  align="center" width="180"></el-table-column>
       <el-table-column label="更新时间" prop="updateDate" :formatter="tableDateFormat" sortable align="center" width="180"></el-table-column>
-      <el-table-column fixed="right" label="操作" align="center">
+      <el-table-column fixed="right" label="操作" align="center" width="240">
         <template #default="scope">
           <el-popconfirm v-if="status[scope.row.status].value === 2" title="该文章已经发布，需要撤回才能编辑，是否撤回"
                          @confirm="cancelPublish(scope.row)" width="200">
@@ -188,20 +188,7 @@ function previewArticle(row: ArticleItem) {
 </template>
 
 <style scoped>
-.article_list_content {
-  background-color: #FFF;
-  padding: 20px;
-  height: 90vh;
-}
 .article_list_pagination {
   margin-top: 20px;
-}
-/*修复elementplus的bug*/
-.el-form--inline {
-  .el-form-item {
-    .el-input, .el-cascader, .el-select, .el-autocomplete {
-      width: 150px;
-    }
-  }
 }
 </style>

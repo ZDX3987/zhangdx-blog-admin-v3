@@ -2,7 +2,7 @@
 
 import {DCaret} from "@element-plus/icons-vue";
 import {onMounted, ref} from "vue";
-import {MenuItem} from "../../type/MenuItem.ts";
+import {MenuItem, MenuItemType} from "../../type/MenuItem.ts";
 import {deleteMenuItem, getMenuListByType, saveMenu, sortMenuList} from "../../api/menuApi.ts";
 import {ElMessage} from "element-plus";
 import MenuEditDialog from "../../components/dialog/MenuEditDialog.vue";
@@ -51,7 +51,7 @@ function addChildMenu(parentMenu: MenuItem) {
 function doSaveEditMenu(editMenuItem: MenuItem) {
   const menuId = editMenuItem.id
   if (!menuId) {
-    editMenuItem.type = props.menuType === 'CLIENT' ? 1 : 2
+    editMenuItem.type = props.menuType === MenuItemType.CLIENT ? 1 : 2
     const hasParentMenu = !!editMenuItem.parentMenu
     const allMenuList: MenuItem[] = menuList.value || []
     if (hasParentMenu) {
@@ -97,7 +97,7 @@ function changeMenuStatus(menu: MenuItem) {
     </el-button-group>
     <el-tree :data="menuList" :draggable="sortable" :expand-on-click-node="false"
              :props="{children: 'childrenMenu'}" node-key="id">
-      <template #default="{ node, data }">
+      <template #default="{ data }">
         <div class="menu-tree-node">
           <span class="menu-node-text">{{ data.text }}</span>
           <div>

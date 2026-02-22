@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
 import MenuTreeTab from "./MenuTreeTab.vue";
+import {MenuItemType} from "../../type/MenuItem.ts";
 
 const menuTabs = [
-  {label: '客户端菜单', name: 'CLIENT'},
-  {label: '管理端菜单', name: 'ADMIN'},
+  {label: '客户端菜单', name: MenuItemType.CLIENT},
+  {label: '管理端菜单', name: MenuItemType.ADMIN},
 ]
 </script>
 

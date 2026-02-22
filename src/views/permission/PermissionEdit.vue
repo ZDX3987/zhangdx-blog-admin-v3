@@ -9,6 +9,7 @@ import {useRoute, useRouter} from "vue-router";
 import {ElMessage} from "element-plus";
 import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 import {getMenuListByType} from "../../api/menuApi.ts";
+import {MenuItemType} from "../../type/MenuItem.ts";
 
 const permissionEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
 const route = useRoute()
@@ -62,7 +63,7 @@ async function resourceTypeSelectChange(value: any) {
   permissionEditFormConfig.value.removeFormItem(resourceLabel)
   switch (value) {
     case resourceTypeDefineArray[0].value:
-      permissionEditFormConfig.value.insertFormItem(3, EditFormItem.defineTreeSelectItem(resourceLabel, 'resourceId', await genMenuTreeSelectOptions())
+      permissionEditFormConfig.value.insertFormItem(3, EditFormItem.defineTreeSelectItem(resourceLabel, 'resourceId', await mergeClientAndAdminMenu())
           .setPlaceholder('请选择权限资源').addRule({ required: true, message: '请选择权限资源', trigger: 'blur' }))
       break
     case resourceTypeDefineArray[1].value:
@@ -72,9 +73,27 @@ async function resourceTypeSelectChange(value: any) {
   }
 }
 
-async function genMenuTreeSelectOptions(): Promise<FormOption[]> {
-  const res = await getMenuListByType('CLIENT')
-  return res.data.map(item => new FormOption(item.text, item.id, item.id))
+async function mergeClientAndAdminMenu(): Promise<FormOption[]> {
+  const clientMenuOptionPromise = await genMenuTreeSelectOptions(MenuItemType.CLIENT)
+  const adminMenuOptionPromise = await genMenuTreeSelectOptions(MenuItemType.ADMIN)
+  const clientMenuOption = new FormOption('客户端', MenuItemType.CLIENT, MenuItemType.CLIENT)
+  clientMenuOption.setChildren(clientMenuOptionPromise)
+  const adminMenuOption = new FormOption('管理端', MenuItemType.ADMIN, MenuItemType.ADMIN)
+  adminMenuOption.setChildren(adminMenuOptionPromise)
+  return [clientMenuOption, adminMenuOption]
+}
+
+
+async function genMenuTreeSelectOptions(menuType: string): Promise<FormOption[]> {
+  const res = await getMenuListByType(menuType)
+  return res.data.map(item => {
+    let formOption = new FormOption(item.text, item.id, item.id)
+    let childrenMenu = item.childrenMenu
+    if (childrenMenu && childrenMenu.length > 0) {
+      formOption.setChildren(childrenMenu.map(subMenu => new FormOption(subMenu.text, subMenu.id, subMenu.id)))
+    }
+    return formOption
+  })
 }
 </script>
 

@@ -94,8 +94,8 @@ function submitLogin(formEl: FormInstance | undefined) {
   position: relative;
   padding: 2rem 5rem;
   border-radius: 5px;
-  margin-top: 25rem;
-  min-height: 25rem;
+  margin-top: 35%;
+  min-height: 25%;
 }
 .login_title {
   color: rgb(176, 183, 189);
