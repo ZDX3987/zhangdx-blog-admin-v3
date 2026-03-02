@@ -34,10 +34,8 @@ function initAdminMenu() {
       <template v-for="(menu, index) in menuList" :key="menu.id">
         <RouterLink  v-if="menu.childrenMenu.length === 0" :index="index + 1 + ''" :to="{path: menu.router}">
           <el-menu-item>
-            <template #title>
-              <el-icon v-if="menu.iconClass" :class="menu.iconClass"></el-icon>
-              <span>{{menu.text}}</span>
-            </template>
+            <el-icon v-if="menu.iconClass" :class="menu.iconClass"></el-icon>
+            <template #title>{{menu.text}}</template>
           </el-menu-item>
         </RouterLink>
         <el-sub-menu v-if="menu.childrenMenu.length > 0" :index="menu.id + '_'">

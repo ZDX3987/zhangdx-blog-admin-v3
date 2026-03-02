@@ -6,6 +6,7 @@ import {useRoute, useRouter} from "vue-router";
 const route = useRoute()
 const router = useRouter()
 const imgUrl = ref<string>()
+const errorMessage = ref<string>('')
 
 onMounted(() => {
   const errorCode = Number(route.params.errorCode)
@@ -15,11 +16,13 @@ onMounted(() => {
 function getErrorImgUrl(errorCode: number): string {
   let url: string
   switch (errorCode) {
-    case 404:
-      url = '/svg/404.svg'
+    case 401:
+      url = '/svg/401.svg'
+      errorMessage.value = '啊~哦~ 您没有要查看的页面的权限，请联系管理员！'
       break
     default:
       url = '/svg/404.svg'
+      errorMessage.value = '啊~哦~ 您要查看的页面不存在或已删除！'
       break
   }
   return url;
@@ -33,7 +36,7 @@ function back() {
 <template>
   <div class="error-content">
     <el-image :src="imgUrl" fit="cover"></el-image>
-    <p>啊~哦~ 您要查看的页面不存在或已删除！</p>
+    <p>{{errorMessage}}</p>
     <p>请检查您输入的网址是否正确，或者点击按钮继续浏览网站</p>
     <button class="back-btn" @click="back()">返回首页</button>
   </div>
