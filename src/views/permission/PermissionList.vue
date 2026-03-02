@@ -11,7 +11,6 @@ import {
   ListTableDataMapping
 } from "../../type/common/ListTableConfig.ts";
 import {useRouter} from "vue-router";
-import type {Role} from "../../type/Role.ts";
 import {ElMessage} from "element-plus";
 import type {Permission} from "../../type/Permission.ts";
 
@@ -30,8 +29,9 @@ function defineListTableConfig(): ListTableConfig {
     ListTableDataMapping.defineIndexColumn(),
     ListTableDataMapping.defineCommonColumn('permissionCode', '代码', 300, 'left'),
     ListTableDataMapping.defineCommonColumn('name', '名称', 200, 'left'),
-    ListTableDataMapping.defineCommonColumn('resourceTypeName', '权限类型', 150)
+    ListTableDataMapping.defineCommonColumn('resourceTypeName', '权限类型', 120)
         .addSlotTemplate('resourceType', '权限类型'),
+    ListTableDataMapping.defineCommonColumn('resourceName', '资源名称', 150),
     ListTableDataMapping.defineCommonColumn('status', '是否启用', 100)
         .addSlotTemplate('status', '是否启用'),
     ListTableDataMapping.defineDateColumn('createdAt', '创建时间', 180),

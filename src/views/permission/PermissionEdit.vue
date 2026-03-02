@@ -25,7 +25,9 @@ onMounted(() => {
   permissionId.value = Number(route.params.permissionId)
   if (permissionId.value) {
     getPermission(permissionId.value).then(res => {
-      permissionEditFormConfig.value = definePermissionEditFormConfig(res.data)
+      const resultData = res.data;
+      permissionEditFormConfig.value = definePermissionEditFormConfig(resultData)
+      resourceTypeSelectChange(resultData.resourceType)
     })
   } else {
     permissionEditFormConfig.value = definePermissionEditFormConfig(new PermissionForm())
