@@ -3,6 +3,7 @@
 import {ref, watch} from "vue";
 import {ArrowRight, Expand, Fold} from "@element-plus/icons-vue";
 import {type RouteRecord, useRoute} from "vue-router";
+import UserAvatarBar from "./UserAvatarBar.vue";
 
 const route = useRoute()
 const menuCollapse = ref(false)
@@ -38,6 +39,9 @@ function menuCollapseMenuCollapse() {
       <el-breadcrumb :separator-icon="ArrowRight">
         <el-breadcrumb-item v-for="item in routeList" :to="{ path: item.path }">{{item.meta.title}}</el-breadcrumb-item>
       </el-breadcrumb>
+    </el-col>
+    <el-col :span="2" :offset="9">
+      <UserAvatarBar/>
     </el-col>
   </el-row>
 </div>

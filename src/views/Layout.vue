@@ -1,24 +1,22 @@
 <script setup lang="ts">
 
-import MenuNav from "../components/layout/MenuNav.vue";
 import HeaderBar from "../components/layout/HeaderBar.vue";
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {getCurrUser} from "../api/oauthApi.ts";
 import {toClass} from "../utils/to-class.ts";
 import {AuthUserInfo} from "../type/AuthUserInfo.ts";
+import {useMainStore} from "../pinia";
+import MenuNav from "../components/layout/MenuNav.vue";
 
 const menuCollapse = ref(false)
-const authUserInfo = ref<AuthUserInfo>()
-const authUsername = computed(() => {
-  let value = authUserInfo.value;
-  return value ? value.username : ''
-})
+const authUsername = ref<string>('');
 const watermarkConfig = {
   rotate: -30,
   zIndex: 0,
   font: {fontSize: 14},
   gap: [200, 200] as [number, number],
 }
+const pinia = useMainStore()
 
 onMounted(() => getAuthUserInfo())
 
@@ -28,7 +26,11 @@ function toggleMenuCollapse(value: boolean) {
 
 function getAuthUserInfo() {
   getCurrUser().then(res => {
-    authUserInfo.value = toClass(res.data, AuthUserInfo)
+    const authUserInfo = toClass(res.data, AuthUserInfo)
+    pinia.updateAuthUserInfo(authUserInfo)
+    if (authUserInfo) {
+      authUsername.value = authUserInfo.username
+    }
   })
 }
 </script>

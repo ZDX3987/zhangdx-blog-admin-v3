@@ -4,6 +4,7 @@ export class Permission {
     name: string;
     resourceType: number;
     resourceId: number;
+    resourceName: string;
     status: number;
     createdAt: Date;
     updatedAt: Date;

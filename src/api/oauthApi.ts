@@ -10,3 +10,7 @@ export function login(loginForm: LoginForm): Promise<ApiResponse<void>> {
 export function getCurrUser(): Promise<ApiResponse<AuthUserInfo>> {
     return genApiResponse(axios.get('/api/user/curruser'))
 }
+
+export function logout() {
+    return genApiResponse(axios.get('/api/logout'))
+}
