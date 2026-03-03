@@ -70,6 +70,7 @@ function initAdminMenu() {
   text-align: left;
   min-height: 100%;
   min-width: 100%;
+  border-right: none;
 }
 .menu_list:not(.el-menu--collapse) {
   width: 200px;

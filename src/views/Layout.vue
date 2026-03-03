@@ -8,6 +8,7 @@ import {AuthUserInfo} from "../type/AuthUserInfo.ts";
 import {useMainStore} from "../pinia";
 import MenuNav from "../components/layout/MenuNav.vue";
 import {getAuthPermission} from "../api/permissionApi.ts";
+import {useRoute} from "vue-router";
 
 const menuCollapse = ref(false)
 const authUsername = ref<string>('');
@@ -18,6 +19,7 @@ const watermarkConfig = {
   gap: [200, 200] as [number, number],
 }
 const pinia = useMainStore()
+const route = useRoute()
 
 onMounted(() => {
   getAuthUserInfo()
@@ -56,7 +58,7 @@ function getPermissionRoute() {
         <el-header>
           <HeaderBar @collapse-menu="toggleMenuCollapse"/>
         </el-header>
-        <el-main>
+        <el-main :class="route.name !== 'Home' ? 'main-content-common-bg' : ''">
           <RouterView/>
         </el-main>
       </el-container>
@@ -74,9 +76,10 @@ function getPermissionRoute() {
 }
 .el-main {
   padding: 0;
-  margin:10px;
-  margin-top: 0;
+  margin: 0 10px 10px 10px;
   height: 90vh;
+}
+.main-content-common-bg {
   background-color: #FFF;
 }
 </style>
