@@ -42,9 +42,7 @@ function handleUserAvatar(command: string) {
             <div class="user-account-dropdown">
               <span class="user-account-name">{{authUsernameText}}</span>
               <div>
-                <el-tag size="small" round type="primary">Tag 1</el-tag>
-                <el-tag size="small" round type="success">Tag 2</el-tag>
-                <el-tag size="small" round type="info">Tag 3</el-tag>
+                <el-tag size="small" round type="success" v-for="role in authUserInfo.roleList" :key="role.id">{{role.roleNameZh}}</el-tag>
               </div>
             </div>
           </template>

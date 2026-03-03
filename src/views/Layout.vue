@@ -7,6 +7,7 @@ import {toClass} from "../utils/to-class.ts";
 import {AuthUserInfo} from "../type/AuthUserInfo.ts";
 import {useMainStore} from "../pinia";
 import MenuNav from "../components/layout/MenuNav.vue";
+import {getAuthPermission} from "../api/permissionApi.ts";
 
 const menuCollapse = ref(false)
 const authUsername = ref<string>('');
@@ -18,7 +19,10 @@ const watermarkConfig = {
 }
 const pinia = useMainStore()
 
-onMounted(() => getAuthUserInfo())
+onMounted(() => {
+  getAuthUserInfo()
+  getPermissionRoute()
+})
 
 function toggleMenuCollapse(value: boolean) {
   menuCollapse.value = value
@@ -31,6 +35,13 @@ function getAuthUserInfo() {
     if (authUserInfo) {
       authUsername.value = authUserInfo.username
     }
+  })
+}
+
+function getPermissionRoute() {
+  getAuthPermission(2).then(res => {
+    const routeList = res.data.map(item => item.resourceKey)
+    pinia.setAuthRouteList(routeList)
   })
 }
 </script>

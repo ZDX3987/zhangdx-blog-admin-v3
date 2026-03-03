@@ -1,5 +1,3 @@
-import type {Role} from "./Role.ts";
-
 export class SysUser {
     id: number;
     username: string;
@@ -11,7 +9,6 @@ export class SysUser {
     createTime: Date;
     status: boolean;
     socialUserVos: SocialUser[];
-    roleList: Role[];
 }
 
 class SocialUser {

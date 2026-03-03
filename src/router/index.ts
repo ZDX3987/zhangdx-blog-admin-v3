@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from "vue-router";
 import {getAuthorization} from "../utils/auth-storage.ts";
 import {ElMessage} from 'element-plus'
 import systemSettingRoute from "./system-setting.ts"
+import {useMainStore} from "../pinia";
 
 const loginRoute = {
         path: '/login',
@@ -245,13 +246,19 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
-
 })
+
 router.beforeEach((to) => {
     if (to.name !== loginRoute.name && getAuthorization() === null) {
         router.push({name: loginRoute.name}).then(() => {
             ElMessage.warning('您还没有登录，请先登录')
         })
+    }
+    if (to.name !== 'Error' && to.name !== 'Login') {
+        const mainStore = useMainStore()
+        if (mainStore.authRouteList.length > 0 && !mainStore.authRouteList.includes(to.path)) {
+            router.push({name: 'Error', params: {errorCode: 401}})
+        }
     }
 })
 export default router

@@ -1,3 +1,5 @@
+import type {Role} from "./Role.ts";
+
 export class AuthUserInfo {
     userId: number;
     username: string;
@@ -7,4 +9,5 @@ export class AuthUserInfo {
     tel: string;
     introduce: string;
     createTime: Date;
+    roleList: Role[];
 }

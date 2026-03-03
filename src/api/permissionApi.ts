@@ -31,3 +31,10 @@ export function getPermission(permissionId: number): Promise<ApiResponse<Permiss
 export function doSavePermission(permissionForm: PermissionForm): Promise<ApiResponse<any>> {
     return genApiResponse(axios.post(url, permissionForm))
 }
+
+export function getAuthPermission(permissionType: number): Promise<ApiResponse<Permission[]>> {
+    let params = {
+        permissionType: permissionType
+    }
+    return genApiResponse(axios.get(url + '/auth-permission', {params}))
+}

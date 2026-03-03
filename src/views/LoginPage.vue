@@ -40,7 +40,7 @@ function submitLogin(formEl: FormInstance | undefined) {
   formEl?.validate(valid => {
     if (valid) {
       login(loginForm).then(res => {
-        router.push({name: 'Layout'})
+        router.push({name: 'Home'})
       })
     }
   })
