@@ -9,5 +9,5 @@ export class AuthUserInfo {
     tel: string;
     introduce: string;
     createTime: Date;
-    roleList: Role[];
+    roleList: Role[] = [];
 }
