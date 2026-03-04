@@ -25,6 +25,10 @@ const props = defineProps({
   }
 })
 
+defineExpose({
+  resetQuery
+})
+
 onMounted(() => {
   if (!props.listTableConfig?.isLocalDataSource()) {
     queryTableData(1, pageSize.value)
@@ -41,6 +45,10 @@ watch(() => props.listTableConfig?.tableData, (newTableData) => {
     tableData.value = newTableData
   }
 })
+
+function resetQuery() {
+  queryTableData(1, pageSize.value)
+}
 
 async function queryTableData(current: number, queryPageSize: number) {
   if (props.listTableConfig === undefined) {

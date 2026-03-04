@@ -32,6 +32,7 @@ const articleQueryForm = reactive({
 })
 const isLoading = ref<boolean>(false)
 const querySort = ref<number>(2)
+const articleTableRef = ref<InstanceType<typeof ListTable>>()
 
 const router = useRouter()
 
@@ -48,7 +49,8 @@ function defineArticleListTableConfig(): ListTableConfig {
   config.deleteConfig = new DeleteConfig((id: number) => delArticle(id))
   config.tableMappings = [
     ListTableDataMapping.defineIndexColumn(),
-      ListTableDataMapping.defineCommonColumn('title', '标题', 300, 'left'),
+      ListTableDataMapping.defineCommonColumn('title', '标题', 300, 'left')
+          .addSlotTemplate('title'),
       ListTableDataMapping.defineCommonColumn('author.nickname', '作者', 150),
     ListTableDataMapping.defineCommonColumn('status', '是否启用', 100)
         .addSlotTemplate('status'),
@@ -96,9 +98,10 @@ function downloadArticle(row: ArticleItem) {
   })
 }
 
-function previewArticle(row: ArticleItem) {
-  router.push({name: 'ArticlePreview', params: {articleId: row.id}})
+function submitQueryForm() {
+  articleTableRef.value?.resetQuery()
 }
+
 </script>
 
 <template>
@@ -110,8 +113,8 @@ function previewArticle(row: ArticleItem) {
       </el-form-item>
       <el-form-item label="文章状态">
         <el-select v-model="articleQueryForm.queryStatus" placeholder="请选择文章状态" clearable multiple
-                   collapse-tags collapse-tags-tooltip>
-          <el-option v-for="option in status" :label="option.name" :value="option.value"/>
+                   collapse-tags collapse-tags-tooltip style="width: 200px">
+          <el-option v-for="option in status" :label="option.name" :value="option.value" :key="option.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="发布时间">
@@ -119,13 +122,18 @@ function previewArticle(row: ArticleItem) {
           start-placeholder="开始日期" end-placeholder="结束日期"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="submitQueryForm">查询</el-button>
       </el-form-item>
     </el-form>
   </div>
-  <ListTable :listTableConfig="articleListTableConfig">
+  <ListTable :listTableConfig="articleListTableConfig" ref="articleTableRef">
+    <template #title="scope">
+      <RouterLink :to="{name: 'ArticlePreview', params: { articleId: scope.row.id.toString()}}">
+        <el-link>{{scope.row.title}}</el-link>
+      </RouterLink>
+    </template>
     <template #status="scope">
-      <el-tag  :type="status[scope.row.status].color">{{scope.row.status}}</el-tag>
+      <el-tag :type="status[scope.row.status].color">{{scope.row.status}}</el-tag>
     </template>
     <template #articleType="scope">
       <el-tag :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{scope.row.articleType}}</el-tag>
@@ -146,7 +154,4 @@ function previewArticle(row: ArticleItem) {
 </template>
 
 <style scoped>
-.article_list_pagination {
-  margin-top: 20px;
-}
 </style>
