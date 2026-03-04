@@ -10,13 +10,13 @@ export  default [
                 path: 'list',
                 name: 'SysUserList',
                 component: () => import('../views/sysuser/SysUserList.vue'),
-                meta: {title: '用户列表'},
+                meta: {title: '用户列表', permissionCode: 'backend:systemUserManage:list'},
             },
             {
                 path: 'edit/:sysUserId',
                 name: 'SysUserEdit',
                 component: () => import('../views/sysuser/SysUserEdit.vue'),
-                meta: {title: '编辑用户'},
+                meta: {title: '编辑用户', permissionCode: 'backend:systemUserManage:edit'},
             },
         ]
     },
@@ -31,19 +31,19 @@ export  default [
                 path: 'list',
                 name: 'PermissionList',
                 component: () => import('../views/permission/PermissionList.vue'),
-                meta: {title: '权限列表'},
+                meta: {title: '权限列表', permissionCode: 'backend:permissionManage:list'},
             },
             {
                 path: 'edit/:permissionId',
                 name: 'PermissionEdit',
                 component: () => import('../views/permission/PermissionEdit.vue'),
-                meta: {title: '编辑权限'},
+                meta: {title: '编辑权限', permissionCode: 'backend:permissionManage:edit'},
             },
             {
                 path: 'add',
                 name: 'PermissionAdd',
                 component: () => import('../views/permission/PermissionEdit.vue'),
-                meta: {title: '新增权限'},
+                meta: {title: '新增权限', permissionCode: 'backend:permissionManage:add'},
             }
         ]
     },
@@ -58,19 +58,19 @@ export  default [
                 path: 'list',
                 name: 'UserRoleList',
                 component: () => import('../views/userrole/UserRoleList.vue'),
-                meta: {title: '权限列表'},
+                meta: {title: '权限列表', permissionCode: 'backend:roleManage:list'},
             },
             {
                 path: 'edit/:roleId',
                 name: 'UserRoleEdit',
                 component: () => import('../views/userrole/UserRoleEdit.vue'),
-                meta: {title: '编辑角色'},
+                meta: {title: '编辑角色', permissionCode: 'backend:roleManage:edit'},
             },
             {
                 path: 'add',
                 name: 'UserRoleAdd',
                 component: () => import('../views/userrole/UserRoleEdit.vue'),
-                meta: {title: '新增角色'},
+                meta: {title: '新增角色', permissionCode: 'backend:roleManage:add'},
             }
         ]
     },
@@ -85,7 +85,7 @@ export  default [
                 path: 'tree',
                 name: 'MenuTree',
                 component: () => import('../views/menu/MenuTree.vue'),
-                meta: {title: '菜单列表'},
+                meta: {title: '菜单列表', permissionCode: 'backend:menuManage:tree'},
             }
         ]
     }

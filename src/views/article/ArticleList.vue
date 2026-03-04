@@ -4,11 +4,12 @@ import {onMounted, reactive, ref} from "vue";
 import {delArticle, download, getArticlePage, toCheckArticle} from "../../api/articelApi.ts";
 import {ResultPage} from "../../type/ResultPage.ts";
 import {ArticleItem} from "../../type/ArticleItem.ts";
-import {dateFormat} from "../../utils/moment-date.ts";
-import {ElMessage, type TableColumnCtx} from "element-plus";
+import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
 import {downloadMdFile} from "../../utils/file-util.ts";
-import ArticlePreview from "./ArticlePreview.vue";
+import ListTable from "../../components/common/ListTable.vue";
+import {DeleteConfig, EditConfig, ListTableConfig, ListTableDataMapping} from "../../type/common/ListTableConfig.ts";
+import type {ApiResponse} from "../../api/axios.ts";
 
 const status: any = {
   "已保存": {name: "已保存", value: 0, color: ""},
@@ -30,35 +31,46 @@ const articleQueryForm = reactive({
   queryDate: undefined,
 })
 const isLoading = ref<boolean>(false)
-
-const articleList = ref<ArticleItem[]>([])
-const resultPage = ref<ResultPage<ArticleItem>>()
-const pageSize = ref<number>(10)
-const currentPage = ref<number>(1)
 const querySort = ref<number>(2)
 
 const router = useRouter()
 
+const articleListTableConfig = ref<ListTableConfig>(new ListTableConfig())
+
 onMounted(() => {
-  queryArticle(currentPage.value, pageSize.value)
+  articleListTableConfig.value = defineArticleListTableConfig()
 })
 
-function queryArticle(queryPage: number, queryPageSize: number) {
+function defineArticleListTableConfig(): ListTableConfig {
+  const config = new ListTableConfig()
+  config.queryConfig.queryFunc = (currentPage, pageSize) => queryArticle(currentPage, pageSize)
+  config.editConfig = new EditConfig((_id: number, row: ArticleItem) => editArticle(row))
+  config.deleteConfig = new DeleteConfig((id: number) => delArticle(id))
+  config.tableMappings = [
+    ListTableDataMapping.defineIndexColumn(),
+      ListTableDataMapping.defineCommonColumn('title', '标题', 300, 'left'),
+      ListTableDataMapping.defineCommonColumn('author.nickname', '作者', 150),
+    ListTableDataMapping.defineCommonColumn('status', '是否启用', 100)
+        .addSlotTemplate('status'),
+    ListTableDataMapping.defineCommonColumn('articleType', '来源', 100)
+        .addSlotTemplate('articleType'),
+    ListTableDataMapping.defineCommonColumn('category', '标签', 300)
+        .addSlotTemplate('category'),
+    ListTableDataMapping.defineCommonColumn('source', '存储格式', 120)
+        .addSlotTemplate('source'),
+    ListTableDataMapping.defineDateColumn('publishDate', '发布时间', 180),
+    ListTableDataMapping.defineDateColumn('updateDate', '更新时间', 180)
+  ]
+  return config;
+}
+
+function queryArticle(queryPage: number, queryPageSize: number): Promise<ApiResponse<ResultPage<ArticleItem>>> {
   isLoading.value = true
   let queryStatus = articleQueryForm.queryStatus
   if (!queryStatus || queryStatus.length === 0) {
     queryStatus = [0, 1, 2, 3];
   }
-  getArticlePage(queryPageSize, queryPage, queryStatus, querySort.value, articleQueryForm.queryDate)
-      .then(res => {
-        let result = ResultPage.build<ArticleItem>(res.data, ArticleItem);
-        articleList.value = result.records
-        result.records = []
-        resultPage.value = result
-        currentPage.value = result.current
-        pageSize.value = result.size
-        isLoading.value = false
-      })
+  return getArticlePage(queryPageSize, queryPage, queryStatus, querySort.value, articleQueryForm.queryDate)
 }
 function cancelPublish(row: ArticleItem) {
   toCheckArticle(row.id, 1).then(() => {
@@ -82,22 +94,6 @@ function downloadArticle(row: ArticleItem) {
     downloadMdFile(blob, row.title + '.md')
     ElMessage.success('下载成功')
   })
-}
-function deleteArticle(row: ArticleItem) {
-  delArticle(row.id).then(() => {
-    queryArticle(1, pageSize.value)
-    ElMessage.success('删除成功')
-  })
-}
-function tableDateFormat(row: ArticleItem, column: TableColumnCtx<any>, cellValue: Date) {
-  return cellValue ? dateFormat(cellValue) : '/'
-}
-
-function sizeChange(changePageSize: number) {
-  queryArticle(currentPage.value, changePageSize)
-}
-function currentChange(changePage: number) {
-  queryArticle(changePage, pageSize.value)
 }
 
 function previewArticle(row: ArticleItem) {
@@ -123,67 +119,29 @@ function previewArticle(row: ArticleItem) {
           start-placeholder="开始日期" end-placeholder="结束日期"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="queryArticle(currentPage, pageSize)">查询</el-button>
+        <el-button type="primary">查询</el-button>
       </el-form-item>
     </el-form>
   </div>
-  <div class="article_list_table">
-    <el-table :data="articleList" @row-dblclick="previewArticle">
-      <el-table-column label="序号" type="index" align="center" width="80"/>
-      <el-table-column label="标题" prop="title" align="left" width="300"/>
-      <el-table-column label="作者" prop="author.nickname" align="center" width="150"/>
-      <el-table-column label="状态" prop="status" align="center" width="100">
-        <template #default="scope">
-          <el-tag  :type="status[scope.row.status].color">{{scope.row.status}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="来源" prop="articleType" align="center" width="100">
-        <template #default="scope">
-          <el-tag :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{scope.row.articleType}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="标签" align="center" width="300">
-        <template #default="scope">
-          <span v-if="scope.row.categories.length > 0"
-                v-for="(cate, index) in scope.row.categories">
+  <ListTable :listTableConfig="articleListTableConfig">
+    <template #status="scope">
+      <el-tag  :type="status[scope.row.status].color">{{scope.row.status}}</el-tag>
+    </template>
+    <template #articleType="scope">
+      <el-tag :type="articleTypeEnum[scope.row.articleType].color" round effect="plain">{{scope.row.articleType}}</el-tag>
+    </template>
+    <template #category="scope">
+      <span v-if="scope.row.categories.length > 0"
+            v-for="(cate, index) in scope.row.categories">
               <el-divider v-if="index !== 0" direction="vertical"></el-divider>
               <span>{{cate.cateName}}</span>
             </span>
-          <span v-else>/</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="存储格式" prop="source" align="center" width="120">
-        <template #default="scope">
-          <el-tag  :type="articleSourceEnum[scope.row.source].color" round effect="plain">{{articleSourceEnum[scope.row.source].name}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="发布时间" prop="publishDate" :formatter="tableDateFormat" sortable  align="center" width="180"></el-table-column>
-      <el-table-column label="更新时间" prop="updateDate" :formatter="tableDateFormat" sortable align="center" width="180"></el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="240">
-        <template #default="scope">
-          <el-popconfirm v-if="status[scope.row.status].value === 2" title="该文章已经发布，需要撤回才能编辑，是否撤回"
-                         @confirm="cancelPublish(scope.row)" width="200">
-            <template #reference>
-              <el-button type="primary">编辑</el-button>
-            </template>
-          </el-popconfirm>
-          <el-button v-else type="primary" @click="editArticle(scope.row)">编辑</el-button>
-          <el-button type="primary" @click="downloadArticle(scope.row)">下载</el-button>
-          <el-popconfirm  width="200"
-              title="确定删除吗？这将会删除和这篇文章相关的所有内容"
-              @confirm="deleteArticle(scope.row)">
-            <template #reference>
-              <el-button type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="article_list_pagination">
-      <el-pagination background layout="total, prev, pager, next, sizes, jumper" :current-page="currentPage" :page-size="pageSize"
-                     :total="resultPage?.total" :page-sizes="[5,10,15,30]" @size-change="sizeChange" @current-change="currentChange" />
-    </div>
-  </div>
+      <span v-else>/</span>
+    </template>
+    <template #source="scope">
+      <el-tag  :type="articleSourceEnum[scope.row.source].color" round effect="plain">{{articleSourceEnum[scope.row.source].name}}</el-tag>
+    </template>
+  </ListTable>
 </div>
 </template>
 

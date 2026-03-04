@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router";
+import {createRouter, createWebHistory, type RouteLocationNormalizedGeneric} from "vue-router";
 import {getAuthorization} from "../utils/auth-storage.ts";
 import {ElMessage} from 'element-plus'
 import systemSettingRoute from "./system-setting.ts"
@@ -8,7 +8,7 @@ const loginRoute = {
         path: '/login',
         name: 'Login',
         component: () => import('../views/LoginPage.vue'),
-        meta: {title: '登录'}
+        meta: {title: '登录', withoutPermissionCheck: true}
 }
 
 const routes = [
@@ -24,7 +24,7 @@ const routes = [
                 path: '/index',
                 name: 'Home',
                 component: () => import('../views/Home.vue'),
-                meta: {title: '首页'}
+                meta: {title: '首页', permissionCode: 'backend:home'}
             },
             {
                 path: '/article',
@@ -37,31 +37,31 @@ const routes = [
                         path: 'list',
                         name: 'ArticleList',
                         component: () => import('../views/article/ArticleList.vue'),
-                        meta: {title: '文章列表'},
+                        meta: {title: '文章列表', permissionCode: 'backend:articleManage:list'},
                     },
                     {
                         path: 'publish',
                         name: 'PublishArticle',
                         component: () => import('../views/article/ArticleEdit.vue'),
-                        meta: {title: '发布文章'},
+                        meta: {title: '发布文章', permissionCode: 'backend:articleManage:publish'},
                     },
                     {
                         path: 'edit/:articleId',
                         name: 'EditArticle',
                         component: () => import('../views/article/ArticleEdit.vue'),
-                        meta: {title: '编辑文章'},
+                        meta: {title: '编辑文章', permissionCode: 'backend:articleManage:edit'},
                     },
                     {
                         path: 'draftbox',
                         name: 'DraftBox',
                         component: () => import('../views/article/DraftBox.vue'),
-                        meta: {title: '草稿箱'},
+                        meta: {title: '草稿箱', permissionCode: 'backend:articleManage:draftbox'},
                     },
                     {
                         path: 'preview/:articleId',
                         name: 'ArticlePreview',
                         component: () => import('../views/article/ArticlePreview.vue'),
-                        meta: {title: '预览文章'},
+                        meta: {title: '预览文章', permissionCode: 'backend:articleManage:preview'},
                     }
                 ]
             },
@@ -75,19 +75,19 @@ const routes = [
                     {
                         path: 'list',
                         name: 'TopicList',
-                        meta: {title: '专栏列表'},
+                        meta: {title: '专栏列表', permissionCode: 'backend:topicManage:list'},
                         component: () => import('../views/topic/TopicList.vue'),
                     },
                     {
                         path: 'edit/:topicId',
                         name: 'TopicEdit',
-                        meta: {title: '编辑专栏'},
+                        meta: {title: '编辑专栏', permissionCode: 'backend:topicManage:edit'},
                         component: () => import('../views/topic/TopicEdit.vue'),
                     },
                     {
                         path: 'add',
                         name: 'TopicAdd',
-                        meta: {title: '新建专栏'},
+                        meta: {title: '新建专栏', permissionCode: 'backend:topicManage:add'},
                         component: () => import('../views/topic/TopicEdit.vue'),
                     }
                 ]
@@ -101,19 +101,19 @@ const routes = [
                 children: [
                     {
                         path: 'list',
-                        meta: {title: '标签列表'},
+                        meta: {title: '标签列表', permissionCode: 'backend:categoryManage:list'},
                         name: 'CategoryList',
                         component: () => import('../views/category/CategoryList.vue'),
                     },
                     {
                         path: 'add',
-                        meta: {title: '新建标签'},
+                        meta: {title: '新建标签', permissionCode: 'backend:categoryManage:add'},
                         name: 'CategoryAdd',
                         component: () => import('../views/category/CategoryEdit.vue'),
                     },
                     {
                         path: 'edit/:categoryId',
-                        meta: {title: '编辑标签'},
+                        meta: {title: '编辑标签', permissionCode: 'backend:categoryManage:edit'},
                         name: 'CategoryEdit',
                         component: () => import('../views/category/CategoryEdit.vue'),
                     }
@@ -130,19 +130,19 @@ const routes = [
                         path: 'list',
                         name: 'CategoryViewList',
                         component: () => import('../views/category/CategoryViewList.vue'),
-                        meta: {title: '视图列表'},
+                        meta: {title: '视图列表', permissionCode: 'backend:categoryViewManage:list'},
                     },
                     {
                         path: 'add',
                         name: 'CategoryViewAdd',
                         component: () => import('../views/category/CategoryViewEdit.vue'),
-                        meta: {title: '新增视图'},
+                        meta: {title: '新增视图', permissionCode: 'backend:categoryViewManage:add'},
                     },
                     {
                         path: 'edit/:viewId',
                         name: 'CategoryViewEdit',
                         component: () => import('../views/category/CategoryViewEdit.vue'),
-                        meta: {title: '编辑视图'},
+                        meta: {title: '编辑视图', permissionCode: 'backend:categoryViewManage:edit'},
                     }
                 ]
             },
@@ -157,19 +157,19 @@ const routes = [
                         path: 'list',
                         name: 'ContentList',
                         component: () => import('../views/content/ContentList.vue'),
-                        meta: {title: '内容列表'},
+                        meta: {title: '内容列表', permissionCode: 'backend:contentManage:list'},
                     },
                     {
                         path: 'add',
                         name: 'ContentAdd',
                         component: () => import('../views/content/ContentEdit.vue'),
-                        meta: {title: '新增内容'},
+                        meta: {title: '新增内容', permissionCode: 'backend:contentManage:add'},
                     },
                     {
                         path: 'edit/:contentId',
                         name: 'ContentEdit',
                         component: () => import('../views/content/ContentEdit.vue'),
-                        meta: {title: '编辑内容'},
+                        meta: {title: '编辑内容', permissionCode: 'backend:contentManage:edit'},
                     }
                 ]
             },
@@ -184,19 +184,19 @@ const routes = [
                         path: 'list',
                         name: 'UpdateLogList',
                         component: () => import('../views/updatelog/UpdateLogList.vue'),
-                        meta: {title: '日志列表'},
+                        meta: {title: '日志列表', permissionCode: 'backend:updateLogManage:list'},
                     },
                     {
                         path: 'add',
                         name: 'UpdateLogAdd',
                         component: () => import('../views/updatelog/UpdateLogEdit.vue'),
-                        meta: {title: '新增日志'},
+                        meta: {title: '新增日志', permissionCode: 'backend:updateLogManage:add'},
                     },
                     {
                         path: 'edit/:logId',
                         name: 'UpdateLogEdit',
                         component: () => import('../views/updatelog/UpdateLogEdit.vue'),
-                        meta: {title: '编辑日志'},
+                        meta: {title: '编辑日志', permissionCode: 'backend:updateLogManage:edit'},
                     }
                 ]
             },
@@ -211,19 +211,19 @@ const routes = [
                         path: 'list',
                         name: 'FriendshipLinkList',
                         component: () => import('../views/friendship-link/FriendshipLinkList.vue'),
-                        meta: {title: '友链列表'},
+                        meta: {title: '友链列表', permissionCode: 'backend:friendshipLinkManage:list'},
                     },
                     {
                         path: 'add',
                         name: 'FriendshipLinkAdd',
                         component: () => import('../views/friendship-link/FriendshipLinkEdit.vue'),
-                        meta: {title: '新增友链'},
+                        meta: {title: '新增友链', permissionCode: 'backend:friendshipLinkManage:add'},
                     },
                     {
                         path: 'edit/:linkId',
                         name: 'FriendshipLinkEdit',
                         component: () => import('../views/friendship-link/FriendshipLinkEdit.vue'),
-                        meta: {title: '编辑友链'},
+                        meta: {title: '编辑友链', permissionCode: 'backend:friendshipLinkManage:edit'},
                     }
                 ]
             },
@@ -232,14 +232,15 @@ const routes = [
                 path: 'error/:errorCode',
                 name: 'Error',
                 component: () => import('../views/common/Error.vue'),
-                meta: {title: '出错了......'},
+                meta: {title: '出错了......', withoutPermissionCheck: true},
             }
         ]
     },
     {
         path: '/:pathMatch(.*)*',
         name: 'UnKnown',
-        redirect: {name: 'Error', params: {errorCode: 404}}
+        redirect: {name: 'Error', params: {errorCode: 404}},
+
     }
 ]
 
@@ -254,11 +255,18 @@ router.beforeEach((to) => {
             ElMessage.warning('您还没有登录，请先登录')
         })
     }
-    if (to.name !== 'Error' && to.name !== 'Login') {
-        const mainStore = useMainStore()
-        if (mainStore.authRouteList.length > 0 && !mainStore.authRouteList.includes(to.path)) {
-            router.push({name: 'Error', params: {errorCode: 401}})
-        }
+
+    if (!checkPermission(to)) {
+        router.push({name: 'Error', params: {errorCode: 401}})
     }
 })
+
+function checkPermission(route: RouteLocationNormalizedGeneric): boolean {
+    if (route.meta.withoutPermissionCheck) {
+        return true
+    }
+    const mainStore = useMainStore()
+    return mainStore.permissionCodeList.length === 0 || mainStore.permissionCodeList.includes(route.meta.permissionCode)
+}
+
 export default router

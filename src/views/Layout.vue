@@ -42,8 +42,8 @@ function getAuthUserInfo() {
 
 function getPermissionRoute() {
   getAuthPermission(2).then(res => {
-    const routeList = res.data.map(item => item.resourceKey)
-    pinia.setAuthRouteList(routeList)
+    const permissionCodeList = res.data.map(item => item.permissionCode)
+    pinia.setPermissionCodeList(permissionCodeList)
   })
 }
 </script>

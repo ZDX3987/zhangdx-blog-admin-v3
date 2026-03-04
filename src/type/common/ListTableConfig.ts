@@ -101,12 +101,12 @@ export class DeleteConfig {
 }
 
 export class EditConfig {
-    editFunc: (id: number) => void;
+    editFunc: (id: number, row: any) => void;
 
     constructor(editFunc?: Function) {
-        this.editFunc = (id) => {
+        this.editFunc = (id: number, row: any) => {
             if (editFunc) {
-                editFunc(id)
+                editFunc(id, row)
             } else {
                 throw new Error('编辑功能未实现')
             }

@@ -17,8 +17,8 @@ const router = useRouter()
 const permissionId = ref<number>()
 const resourceTypeDefineArray: FormOption[] = [
   new FormOption('菜单', 1, 1),
-  new FormOption('按钮', 2, 2),
-  new FormOption('路由', 3, 3),
+  new FormOption('路由', 2, 2),
+  new FormOption('按钮', 3, 3),
 ]
 
 onMounted(() => {

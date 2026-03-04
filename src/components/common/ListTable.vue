@@ -76,7 +76,7 @@ function doEdit(row: any) {
   }
   let editFunc = props.listTableConfig?.editConfig.editFunc
   try {
-    editFunc(id)
+    editFunc(id, row)
   } catch (error) {
     ElMessage.error('' + error)
   }
