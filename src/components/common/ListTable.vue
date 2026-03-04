@@ -155,7 +155,8 @@ function tableCurrentChange(row: any) {
             <slot v-if="slotName" :name="slotName" v-bind="slotProps"/>
           </template>
         </el-table-column>
-        <el-table-column v-if="listTableConfig.needShowOperator()" label="操作" fixed="right" align="center">
+        <el-table-column v-if="listTableConfig.needShowOperator()" label="操作" fixed="right" align="center"
+            width="160">
           <template #default="scope">
             <el-button v-if="listTableConfig.editConfig" type="primary" @click="doEdit(scope.row)">编辑</el-button>
             <el-popconfirm v-if="listTableConfig.deleteConfig" width="200"

@@ -7,7 +7,7 @@ export function fromNow(date: Date) {
 }
 
 export function dateFormat (date: Date | undefined, pattern = 'yyyy-MM-DD HH:mm:ss') {
-    if (date === undefined) {
+    if (date === undefined || date === null) {
         return ''
     }
     return moment(date).format(pattern)
