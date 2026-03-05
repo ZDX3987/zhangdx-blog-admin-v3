@@ -123,7 +123,8 @@ function selectUploadImg(uploadFile: UploadFile) {
       <el-col :span="12">
         <EditForm :editFormConfig="articleEditFormConfig">
           <template #coverImgUpload>
-            <el-upload list-type="picture-card" v-model:file-list="coverImgFileList" :limit="1" :auto-upload="false" :on-change="selectUploadImg">
+            <el-upload list-type="picture-card" v-model:file-list="coverImgFileList" :limit="1" :auto-upload="false"
+                       :on-change="selectUploadImg" accept="image/*,">
               <el-icon><Plus/></el-icon>
             </el-upload>
           </template>
