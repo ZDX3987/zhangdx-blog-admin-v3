@@ -69,10 +69,7 @@ function resetForm() {
                      :titles="formItem.title" :button-texts="formItem.buttonText">
         </el-transfer>
         <el-upload v-else-if="formItem.isUpload()" :list-type="formItem.listType">
-          <img v-if="realFormValue[formItem.model]" :src="realFormValue[formItem.model]" alt=""/>
-          <el-icon v-else>
-            <Plus/>
-          </el-icon>
+          <el-icon><Plus/></el-icon>
         </el-upload>
         <slot v-else-if="formItem.isSlot()" :name="formItem.slot?.default"/>
         <el-input v-else-if="formItem.type === FormItemType.Textarea" v-model="realFormValue[formItem.model]"

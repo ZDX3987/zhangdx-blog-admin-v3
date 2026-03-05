@@ -9,14 +9,15 @@ import {ArticleExtraData, ArticleItem, PreviewConfig} from "../../type/ArticleIt
 import CategorySelectDialog from "../../components/dialog/CategorySelectDialog.vue";
 import type {CategoryItem} from "../../type/CategoryItem.ts";
 import MarkdownContent from "../../components/editor/MarkdownContent.vue";
-import {ElMessage} from "element-plus";
+import {ElMessage, type UploadFile} from "element-plus";
+import {Plus} from "@element-plus/icons-vue";
 
 const route = useRoute()
 const articleEditFormConfig = ref<EditFormConfig>()
 const articleId = ref<number>()
 const articleInfo = ref<ArticleItem>(new ArticleItem())
 const categorySelectDialogRef = ref<InstanceType<typeof CategorySelectDialog>>()
-const coverImgFileList = ref<File[]>([])
+const coverImgFileList = ref<UploadFile[]>([])
 const editorName = ref<string>('markdown')
 const markdownContentRef = ref<InstanceType<typeof MarkdownContent>>()
 
@@ -26,6 +27,9 @@ onMounted(() => {
     getArticleById(articleId.value).then(res => {
       articleInfo.value = res.data
       articleEditFormConfig.value = defineArticleEditConfig(articleInfo.value)
+      if (articleInfo.value.coverImg) {
+        coverImgFileList.value.push({name: undefined, status: undefined, uid: undefined, url: articleInfo.value.coverImg})
+      }
     })
   } else {
     articleEditFormConfig.value = defineArticleEditConfig(articleInfo.value)
@@ -38,7 +42,7 @@ function defineArticleEditConfig(formValue: ArticleItem): EditFormConfig {
   formConfig.formItems = [
     EditFormItem.defineInputItem('文章标题', 'title').setPlaceholder('请输入文章标题')
         .addRule({required: true, message: '请输入文章标题', trigger: 'blur'}),
-    EditFormItem.defineUploadItem('文章封面', 'coverImg'),
+    EditFormItem.defineSlotItem('文章封面', 'coverImgUpload'),
     EditFormItem.defineSlotItem('文章标签', 'articleCategory')
   ]
   formConfig.resettable = false
@@ -103,6 +107,10 @@ function genArticleDigest(text: string, length: number): string {
 function editorInsert(callback: Function) {
   saveDraftArticle(callback)
 }
+
+function selectUploadImg(uploadFile: UploadFile) {
+  coverImgFileList.value.push(uploadFile)
+}
 </script>
 
 <template>
@@ -110,6 +118,11 @@ function editorInsert(callback: Function) {
     <el-row>
       <el-col :span="12">
         <EditForm :editFormConfig="articleEditFormConfig">
+          <template #coverImgUpload>
+            <el-upload list-type="picture-card" v-model:file-list="coverImgFileList" :limit="1" :auto-upload="false" :on-change="selectUploadImg">
+              <el-icon><Plus/></el-icon>
+            </el-upload>
+          </template>
           <template #articleCategory>
             <el-tag class="article-cate-list" v-for="cate in articleInfo.categories" :key="cate.id" closable
                     @close="removeSelectCategory(cate)">
@@ -121,13 +134,13 @@ function editorInsert(callback: Function) {
       </el-col>
       <el-col :span="6" :offset="6">
         <el-button-group>
-          <el-button type="primary" plain v-if="editorName === 'markdown'">导入MarkDown</el-button>
           <el-tooltip class="item" effect="dark" content="提交至管理员审核" placement="top-start">
             <el-button :disabled="!articleInfo.id" type="primary" @click="saveToAudit">发布</el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="保存本次修改" placement="top-end">
             <el-button :disabled="!articleInfo.id" type="primary" @click="saveRealArticle(articleInfo.status)">保存</el-button>
           </el-tooltip>
+          <el-button type="primary" plain v-if="editorName === 'markdown'">导入MarkDown</el-button>
         </el-button-group>
       </el-col>
     </el-row>
