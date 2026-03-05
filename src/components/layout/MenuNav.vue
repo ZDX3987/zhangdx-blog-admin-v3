@@ -25,7 +25,7 @@ function initAdminMenu() {
 
 <template>
   <el-scrollbar wrapClass="scrollbar-wrapper" class="bg_color">
-    <h4 class="nav_title">{{ isCollapse ? 'Z' : title }}</h4>
+    <h4 class="nav_title">{{ isCollapse ? title.slice(0, 1) : title }}</h4>
     <el-menu :collapse="isCollapse"
              background-color="#304156"
              text-color="#bfcbd9"
