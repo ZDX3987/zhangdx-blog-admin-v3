@@ -11,6 +11,8 @@ import type {CategoryItem} from "../../type/CategoryItem.ts";
 import MarkdownContent from "../../components/editor/MarkdownContent.vue";
 import {ElMessage, type UploadFile} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
+import router from "../../router";
+import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 
 const route = useRoute()
 const articleEditFormConfig = ref<EditFormConfig>()
@@ -84,8 +86,9 @@ function saveRealArticle(articleStatus: string) {
   const articleForm = articleInfo.value
   handleArticleText(articleForm)
   articleForm.status = articleStatus
-  doSaveArticle(coverImgFileList.value[0], articleForm).then(res => {
+  doSaveArticle(coverImgFileList.value[0].raw, articleForm).then(res => {
     ElMessage.success(res.msg)
+    router.push({name: 'ArticleList'})
   }).catch(error => ElMessage.error(error))
 }
 
@@ -115,6 +118,7 @@ function selectUploadImg(uploadFile: UploadFile) {
 
 <template>
   <div>
+    <SubComponentTitle v-if="articleId"/>
     <el-row>
       <el-col :span="12">
         <EditForm :editFormConfig="articleEditFormConfig">

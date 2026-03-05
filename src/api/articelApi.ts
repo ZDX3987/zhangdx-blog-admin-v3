@@ -2,6 +2,7 @@ import axios, {type ApiResponse} from "./axios.ts";
 import type {ResultPage} from "../type/ResultPage.ts";
 import {genApiResponse} from "../utils/api-util.ts";
 import type {ArticleItem} from "../type/ArticleItem.ts";
+import type {UploadRawFile} from "element-plus";
 
 const url = '/api/article'
 
@@ -57,9 +58,11 @@ export function doSaveDraftArticle(articleItem: ArticleItem): Promise<ApiRespons
     return genApiResponse(axios.post(url + '/draft-article', articleItem));
 }
 
-export function doSaveArticle(file: File, article: ArticleItem) {
+export function doSaveArticle(file: UploadRawFile | undefined, article: ArticleItem) {
     let form = new FormData();
-    form.append("file", file);
+    if (file) {
+        form.append("file", file);
+    }
     form.append('articleJSON', JSON.stringify(article));
     return genApiResponse(axios.put(url + '/article', form, {
         headers: {
