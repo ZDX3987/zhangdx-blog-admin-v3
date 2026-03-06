@@ -30,3 +30,7 @@ export function getRoleItem(roleId: number): Promise<ApiResponse<Role>> {
 export function doSaveRole(roleForm: Role): Promise<ApiResponse<any>> {
     return genApiResponse(axios.post(url, roleForm))
 }
+
+export function getValidRoles(): Promise<ApiResponse<Role[]>> {
+    return genApiResponse(axios.get(url + '/valid-roles'))
+}
