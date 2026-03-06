@@ -8,6 +8,8 @@ const service = axios.create({
     timeout: 15000
 })
 
+const authApi: string[] = ['/api/login', '/api/client/oauth/social-login']
+
 service.interceptors.request.use(request => {
     const token: string | null = getAuthorization()
     token && (request.headers.Authorization = token)
@@ -52,7 +54,7 @@ function processCommonResponseCode(responseData: ApiResponse<any>) {
 }
 
 function storageToken(response: AxiosResponse<any>) {
-    if (response.config.url === '/api/login') {
+    if (authApi.includes(response.config.url || '')) {
         let token = response.headers.authorization;
         if (token) {
             setAuthorization(token)
