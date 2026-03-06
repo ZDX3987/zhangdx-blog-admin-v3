@@ -9,8 +9,8 @@ const route = useRoute()
 const errCode = ref<number>()
 
 onMounted(() => {
-  const username = route.params.username
-  errCode.value = Number(route.params.errCode)
+  const username = route.query.username
+  errCode.value = Number(route.query.errCode)
   if (errCode.value === 4001) {
     ElMessage.warning({
       message: '当前账号已经关联本系统的其他账号，请先解绑',

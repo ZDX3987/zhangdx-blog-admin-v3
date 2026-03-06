@@ -5,14 +5,24 @@ import systemSettingRoute from "./system-setting.ts"
 import {useMainStore} from "../pinia";
 
 const loginRoute = {
-        path: '/login',
-        name: 'Login',
-        component: () => import('../views/LoginPage.vue'),
-        meta: {title: '登录', withoutPermissionCheck: true}
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/LoginPage.vue'),
+    meta: {title: '登录', withoutPermissionCheck: true}
+}
+
+const oauthRoute = {
+    path: '/receive_token',
+    name: 'ReceiveToken',
+    component: () => import('../views/ReceiveToken.vue'),
+    meta: {
+        title: '授权登录'
+    }
 }
 
 const routes = [
     loginRoute,
+    oauthRoute,
     {
         path: '/',
         name: 'Layout',
@@ -229,14 +239,6 @@ const routes = [
             },
             ...systemSettingRoute,
             {
-                path: '/receive_token',
-                name: 'ReceiveToken',
-                component: () => import('../views/ReceiveToken.vue'),
-                meta: {
-                    title: '授权登录'
-                }
-            },
-            {
                 path: 'error/:errorCode',
                 name: 'Error',
                 component: () => import('../views/common/Error.vue'),
@@ -258,7 +260,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-    if (to.name !== loginRoute.name && getAuthorization() === null) {
+    if ((to.name !== loginRoute.name && to.name !== 'ReceiveToken') && getAuthorization() === null) {
         router.push({name: loginRoute.name}).then(() => {
             ElMessage.warning('您还没有登录，请先登录')
         })
