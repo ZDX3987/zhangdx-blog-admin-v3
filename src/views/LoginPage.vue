@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import Bg from "../components/common/Bg.vue";
 import {onMounted, reactive, ref} from "vue";
-import {User, Lock} from "@element-plus/icons-vue";
+import {Lock, User} from "@element-plus/icons-vue";
 import type {LoginForm} from "../type/LoginForm.ts";
-import {type FormInstance, type FormRules} from "element-plus";
-import {login} from "../api/oauthApi.ts";
+import {ElMessage, type FormInstance, type FormRules} from "element-plus";
+import {login, socialLogin} from "../api/oauthApi.ts";
 import {useRouter} from "vue-router";
+import {socialLoginTypeBtnArray, SocialLoginTypeEnum} from "../type/common/social-login-type.ts";
 
 const router = useRouter()
 const loginFormRef = ref<FormInstance>()
@@ -17,12 +18,7 @@ const formRules = reactive<FormRules<LoginForm>>({
   username: { required: true, message: '请输入用户名', trigger: 'change' },
   password: { required: true, message: '请输入密码', trigger: 'change' },
 })
-const loginType = [
-  {type: 'QQ', icon: 'iconfont iconQQ', color: 'rgb(94,164,210)', text: 'QQ'},
-  {type: 'gitee', icon: 'iconfont iconmayun', color: 'rgb(178,53,37)', text: '码云'},
-  {type: 'GITHUB', icon: 'iconfont iconhuaban881', color: 'rgb(51,51,51)', text: 'Github'},
-  {type: 'FEISHU', icon: 'iconfont iconiconfeishuLOGO', color: 'rgb(76,114,252)', text: '飞书'}
-]
+const loginType = socialLoginTypeBtnArray
 
 onMounted(() => {
   enterLogin()
@@ -44,6 +40,15 @@ function submitLogin(formEl: FormInstance | undefined) {
       })
     }
   })
+}
+
+function doSocialLogin(type: SocialLoginTypeEnum) {
+  const newWindow = window.open('', '_blank', "width=1000,height=600,menubar=yes,location=yes,resizable=yes,scrollbars=true,status=true");
+  socialLogin(type, 'LOGIN', -1).then(res => {
+    if (newWindow) {
+      newWindow.location = res.data
+    }
+  }).catch(error => ElMessage.error(error))
 }
 
 </script>
@@ -72,7 +77,7 @@ function submitLogin(formEl: FormInstance | undefined) {
         <div class="login_social_content">
           <el-text class="login_social_label">快捷登录：</el-text>
           <span class="login_social_item" v-for="socialType in loginType" :key="socialType.type" :class="socialType.icon"
-                :title="socialType.text" :style="{color:socialType.color}">
+                :title="socialType.text" :style="{color:socialType.color}" @click="doSocialLogin(socialType.type)">
           </span>
         </div>
       </div>
@@ -121,7 +126,9 @@ function submitLogin(formEl: FormInstance | undefined) {
 .login_social_content {
   margin-top: 30px;
   height: 30px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .login_social_label {
   color: rgb(176, 183, 189);
