@@ -229,6 +229,14 @@ const routes = [
             },
             ...systemSettingRoute,
             {
+                path: '/receive_token',
+                name: 'ReceiveToken',
+                component: () => import('../views/ReceiveToken.vue'),
+                meta: {
+                    title: '授权登录'
+                }
+            },
+            {
                 path: 'error/:errorCode',
                 name: 'Error',
                 component: () => import('../views/common/Error.vue'),
