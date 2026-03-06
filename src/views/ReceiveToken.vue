@@ -26,7 +26,7 @@ onMounted(() => {
     return
   }
   realLogin(username).then(() => {
-    window.opener.location.reload()
+    window.opener.location.href = '/index'
     window.close()
   })
 
