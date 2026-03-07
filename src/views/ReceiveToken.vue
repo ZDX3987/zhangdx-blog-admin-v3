@@ -11,9 +11,18 @@ const errCode = ref<number>()
 onMounted(() => {
   const username = route.query.username
   errCode.value = Number(route.query.errCode)
-  if (errCode.value === 4001) {
+  let errorMsg = ''
+  if (errCode.value) {
+    switch (errCode.value) {
+      case 4001:
+        errorMsg = '当前账号已经关联本系统的其他账号，请先解绑'
+        break
+      case 403:
+        errorMsg = '当前账号没有管理端系统权限，请联系管理员处理'
+        break
+    }
     ElMessage.warning({
-      message: '当前账号已经关联本系统的其他账号，请先解绑',
+      message: errorMsg,
       onClose: () => {
         window.close()
       }
@@ -35,9 +44,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <div v-if="errCode === 4001">
-      <p>本页面3秒后自动关闭</p>
-    </div>
+    <p v-if="errCode">本页面3秒后自动关闭</p>
     <p v-else>登录成功</p>
   </div>
 </template>

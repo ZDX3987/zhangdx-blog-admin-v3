@@ -19,7 +19,8 @@ export function logout() {
 export function socialLogin(type: SocialLoginTypeEnum, method: string, sysUserId: number): Promise<ApiResponse<string>> {
     const params = {
         method: method,
-        sysUserId: sysUserId
+        sysUserId: sysUserId,
+        platform: 'ADMIN'
     }
     return genApiResponse(axios.get('/api/client/oauth/login/' + type, {params}))
 }
