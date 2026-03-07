@@ -7,7 +7,6 @@ import {toClass} from "../utils/to-class.ts";
 import {AuthUserInfo} from "../type/AuthUserInfo.ts";
 import {useMainStore} from "../pinia";
 import MenuNav from "../components/layout/MenuNav.vue";
-import {getAuthPermission} from "../api/permissionApi.ts";
 import {useRoute} from "vue-router";
 
 const menuCollapse = ref(false)
@@ -23,7 +22,6 @@ const route = useRoute()
 
 onMounted(() => {
   getAuthUserInfo()
-  getPermissionRoute()
 })
 
 function toggleMenuCollapse(value: boolean) {
@@ -40,12 +38,6 @@ function getAuthUserInfo() {
   })
 }
 
-function getPermissionRoute() {
-  getAuthPermission(2).then(res => {
-    const permissionCodeList = res.data.map(item => item.permissionCode)
-    pinia.setPermissionCodeList(permissionCodeList)
-  })
-}
 </script>
 
 <template>

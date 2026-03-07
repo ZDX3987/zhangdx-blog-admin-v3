@@ -265,18 +265,23 @@ router.beforeEach((to) => {
             ElMessage.warning('您还没有登录，请先登录')
         })
     }
-
-    if (!checkPermission(to)) {
-        router.push({name: 'Error', params: {errorCode: 401}})
-    }
+    const result = checkPermission(to)
+    result.then(hasPermission => {
+        if (!hasPermission) {
+            router.push({name: 'Error', params: {errorCode: 401}})
+        }
+    })
 })
 
-function checkPermission(route: RouteLocationNormalizedGeneric): boolean {
+async function checkPermission(route: RouteLocationNormalizedGeneric): Promise<boolean> {
     if (route.meta.withoutPermissionCheck) {
         return true
     }
     const mainStore = useMainStore()
-    return mainStore.permissionCodeList.length === 0 || mainStore.permissionCodeList.includes(route.meta.permissionCode)
+    if (!mainStore.permissionCodeLoaded) {
+        await mainStore.loadPermissionCodeList()
+    }
+    return mainStore.permissionCodeList.includes(route.meta.permissionCode)
 }
 
 export default router
