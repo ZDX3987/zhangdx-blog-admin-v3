@@ -21,7 +21,10 @@ const updateLogFormRule = {
 
 onMounted(() => {
   initEditor()
-  queryUpdateLog(Number(route.params.logId))
+  const logId = Number(route.params.logId)
+  if (logId) {
+    queryUpdateLog(logId)
+  }
 })
 
 function queryUpdateLog(logId: number) {
