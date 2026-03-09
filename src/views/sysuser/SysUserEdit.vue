@@ -4,13 +4,13 @@ import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 import EditForm from "../../components/common/EditForm.vue";
 import {useRoute, useRouter} from "vue-router";
 import {computed, type ComputedRef, onMounted, ref} from "vue";
-import {getUserInfo} from "../../api/sysUserApi.ts";
+import {getUserInfo, modifySysUserInfo} from "../../api/sysUserApi.ts";
 import {EditFormConfig, EditFormItem, FormOption, SubmitConfig} from "../../type/common/EditFormConfig.ts";
 import type {SysUser} from "../../type/SysUser.ts";
 import {getValidRoles} from "../../api/roleApi.ts";
 import type {Role} from "../../type/Role.ts";
 import {Plus} from "@element-plus/icons-vue";
-import type {UploadFile} from "element-plus";
+import {ElMessage, type UploadFile} from "element-plus";
 
 const sysUserEditFormConfig = ref<EditFormConfig>(new EditFormConfig())
 
@@ -44,7 +44,7 @@ function defineSysUserEditFormConfig(formValue: SysUser, options: FormOption[]) 
         .setPlaceholder('请选择适用角色').addRule({required: true, message: '请选择适用角色', trigger: 'blur'}),
     EditFormItem.defineTextarea('个人介绍', 'introduce').setPlaceholder('请输入个人介绍'),
     EditFormItem.defineSlotItem('头像', 'avatar'),
-    EditFormItem.defineSwitchItem('是否启用', 'status'),
+    EditFormItem.defineSwitchItem('是否启用', 'status', [false, true]),
   ]
   formConfig.openValidate()
   formConfig.formValue = formValue
@@ -57,7 +57,10 @@ function buildFormOptions(roleList: Role[]) {
 }
 
 function submitEditUser(formValue: SysUser) {
-
+  modifySysUserInfo(formValue, userAvatarFile.value[0].raw).then(() => {
+    ElMessage.success('修改成功')
+    router.push({name: 'SysUserList'})
+  }).catch(error => ElMessage.error(error))
 }
 
 function selectAvatarFile(uploadFile: UploadFile) {

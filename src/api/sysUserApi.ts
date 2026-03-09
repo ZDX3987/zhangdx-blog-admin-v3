@@ -2,6 +2,7 @@ import {genApiResponse} from "../utils/api-util.ts";
 import axios, {type ApiResponse} from "./axios.ts";
 import type {ResultPage} from "../type/ResultPage.ts";
 import {SysUser} from "../type/SysUser.ts";
+import type {UploadRawFile} from "element-plus";
 
 const url = '/api/user'
 
@@ -37,4 +38,16 @@ export function disableUser(sysUserId: number, disabled: boolean): Promise<ApiRe
         disabled: disabled
     }
     return genApiResponse(axios.post(url + '/convert-status', from))
+}
+
+export function modifySysUserInfo(sysUser: SysUser, avatarFile: UploadRawFile | undefined): Promise<ApiResponse<any>> {
+    let form = {
+        userInfoJson: JSON.stringify(sysUser),
+        avatarFile
+    }
+    return genApiResponse(axios.put(url, form, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }))
 }

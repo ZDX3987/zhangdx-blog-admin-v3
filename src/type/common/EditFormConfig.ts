@@ -35,10 +35,13 @@ export class EditFormItem {
         return item
     }
 
-    public static defineSwitchItem(label: string, model: string): SwitchFormItem {
+    public static defineSwitchItem(label: string, model: string, switchValue?: any[]): SwitchFormItem {
         const item = new SwitchFormItem()
         item.label = label
         item.model = model
+        if (switchValue) {
+            item.switchValue = switchValue
+        }
         return item
     }
 

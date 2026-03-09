@@ -25,8 +25,8 @@ function defineSysUserListTableConfig(): ListTableConfig {
     ListTableDataMapping.defineCommonColumn('nickname', '昵称', 180, 'left'),
     ListTableDataMapping.defineCommonColumn('avatar', '头像', 80).addSlotTemplate('userAvatar'),
     ListTableDataMapping.defineCommonColumn('status', '是否启用', 120).addSlotTemplate('status'),
-    ListTableDataMapping.defineCommonColumn('tel', '电话', 150, 'left'),
-    ListTableDataMapping.defineCommonColumn('email', '邮箱', 150, 'left'),
+    ListTableDataMapping.defineCommonColumn('tel', '电话', 140, 'left'),
+    ListTableDataMapping.defineCommonColumn('email', '邮箱', 160, 'left'),
     ListTableDataMapping.defineCommonColumn('roleList', '用户角色', 300)
         .addSlotTemplate('sysUserRole'),
     ListTableDataMapping.defineCommonColumn('socialUserVos', '第三方账号绑定', 400, 'left')
