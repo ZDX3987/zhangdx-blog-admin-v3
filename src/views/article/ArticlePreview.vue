@@ -9,6 +9,8 @@ import MarkdownPreview from "../../components/article/MarkdownPreview.vue";
 import RichTextPreview from "../../components/article/RichTextPreview.vue";
 import {dateFormat} from "../../utils/moment-date.ts";
 import {articleStatus, ArticleStatusEnum} from "../../utils/common-status.ts"
+import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
+import {setTitle} from "../../utils/set-title.ts";
 
 const route = useRoute()
 const router = useRouter()
@@ -20,6 +22,7 @@ onMounted(() => {
   if (articleId) {
     getArticleById(articleId).then(res => {
       articleInfo.value = res.data
+      setTitle(articleInfo.value.title)
     }).catch(err => ElMessage.error(err))
   }
 })
@@ -37,6 +40,7 @@ function auditArticle() {
 </script>
 
 <template>
+  <SubComponentTitle/>
   <div id="article-preview-content" class="article-preview-content" v-if="articleInfo">
     <el-row align="middle">
       <el-col :span="12">

@@ -50,8 +50,9 @@ function getAuthUserInfo() {
         <el-header>
           <HeaderBar @collapse-menu="toggleMenuCollapse"/>
         </el-header>
-        <el-main :class="route.name !== 'Home' ? 'main-content-common-bg' : ''">
+        <el-main id="layoutMain" :class="route.name !== 'Home' ? 'main-content-common-bg' : ''">
           <RouterView/>
+          <el-backtop target="#layoutMain"/>
         </el-main>
       </el-container>
     </el-container>

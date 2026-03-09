@@ -3,6 +3,7 @@ import {getAuthorization} from "../utils/auth-storage.ts";
 import {ElMessage} from 'element-plus'
 import systemSettingRoute from "./system-setting.ts"
 import {useMainStore} from "../pinia";
+import {setTitle} from "../utils/set-title.ts";
 
 const loginRoute = {
     path: '/login',
@@ -271,7 +272,9 @@ router.beforeEach((to) => {
             router.push({name: 'Error', params: {errorCode: 401}})
         }
     })
+    setTitle(to.meta.title)
 })
+
 
 async function checkPermission(route: RouteLocationNormalizedGeneric): Promise<boolean> {
     if (route.meta.withoutPermissionCheck) {
