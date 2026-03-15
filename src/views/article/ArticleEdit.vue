@@ -151,7 +151,7 @@ function selectUploadImg(uploadFile: UploadFile) {
     </el-row>
     <el-tabs class="article-editor-tabs" v-model="editorName">
       <el-tab-pane label="Markdown编辑器" name="markdown">
-        <MarkdownContent :markdownText="articleInfo.text" :contentKey="articleInfo.id"
+        <MarkdownContent :markdownText="articleInfo.text" :contentKey="articleInfo.id" :contentUploadUrl="'/api/article/article/upload'"
                          ref="markdownContentRef" @editorInsert="editorInsert"/>
       </el-tab-pane>
       <el-tab-pane label="富文本编辑器" name="richText"></el-tab-pane>

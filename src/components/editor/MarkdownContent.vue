@@ -4,17 +4,10 @@ import "vditor/dist/index.css"
 import {onMounted, ref, watch} from "vue";
 import {formatUploadResponse, getTextFromHtml, handleCustomUpload} from "../../utils/vditor-util.ts";
 import {type VditorPreview} from "../../type/ArticleItem.ts";
+import type {MarkdownEditorProp} from "../../type/common/markdown-editor-prop.ts";
 
 const mdEditor = ref<Vditor>()
-const props = defineProps({
-  markdownText: {
-    type: String,
-    default: ''
-  },
-  contentKey: {
-    type: Number
-  }
-})
+const props = defineProps<MarkdownEditorProp>()
 const emit = defineEmits(['editorInsert'])
 
 watch(() => props.markdownText, (newValue) => {
@@ -46,7 +39,7 @@ function initEditor(): Vditor {
       emit('editorInsert', (text: string) => mdEditor.value?.setValue(text, true))
     },
     upload: {
-      url: '/api/article/article/upload',
+      url: props.contentUploadUrl,
       handler(files: File[]): string | Promise<string> | Promise<null> | null {
         const contentKey: number = props.contentKey
         if (contentKey) {

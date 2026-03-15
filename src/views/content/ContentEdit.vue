@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import {onMounted, ref, shallowRef} from "vue";
+import {onMounted, ref} from "vue";
 import {ContentItem} from "../../type/ContentItem.ts";
 import {getContentById} from "../../api/content.ts";
 import {useRoute} from "vue-router";
 import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 import EditForm from "../../components/common/EditForm.vue";
 import {EditFormConfig, EditFormItem, SubmitConfig} from "../../type/common/EditFormConfig.ts";
-import {Editor, Toolbar} from "@wangeditor/editor-for-vue";
 import '@wangeditor/editor/dist/css/style.css'
+import RichTextEditor from "../../components/editor/RichTextEditor.vue";
 
 const route = useRoute()
 const contentEditFormConfig = ref<EditFormConfig>()
-const editorRef = shallowRef()
-const editorMode = ref<string>('default')
-const editorValue = ref<string>('')
 
 onMounted(() => {
   let contentId: number = Number(route.params.contentId)
@@ -45,30 +42,19 @@ function defineContentEditFormConfig(formValue: ContentItem): EditFormConfig {
   return formConfig;
 }
 
-function submitContentForm() {
+function submitContentForm(formValue: ContentItem) {
 
 }
 
-function handleEditorCreated(editor: Editor) {
-  editorRef.value = editor
-}
+
 
 </script>
 
 <template>
 <SubComponentTitle/>
-  <EditForm :editFormConfig="contentEditFormConfig">
-    <template #status>
-      <div id="content-editor" class="editor_border">
-        <Toolbar class="editor_border" :editor="editorRef" :mode="editorMode"></Toolbar>
-        <Editor v-model="editorValue" :mode="editorMode" @onCreated="handleEditorCreated"></Editor>
-      </div>
-    </template>
-  </EditForm>
+  <EditForm :editFormConfig="contentEditFormConfig"></EditForm>
+  <RichTextEditor/>
 </template>
 
 <style scoped>
-.editor_border {
-  border: 1px solid #ccc;
-}
 </style>

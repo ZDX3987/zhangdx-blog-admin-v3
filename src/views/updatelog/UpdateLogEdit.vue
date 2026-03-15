@@ -64,7 +64,7 @@ function doSave(formValue: UpdateLog) {
 <div class="update_log_edit_content">
   <SubComponentTitle/>
   <EditForm :editFormConfig="updateLogEditFormConfig"></EditForm>
-  <MarkdownContent :markdownText="updateLogForm.content" :contentKey="updateLogForm.id" ref="markdownContentRef"/>
+  <MarkdownContent :markdownText="updateLogForm.content" :contentKey="updateLogForm.id" ref="markdownContentRef" :contentUploadUrl="'/api/article/article/upload'"/>
 
 </div>
 </template>
