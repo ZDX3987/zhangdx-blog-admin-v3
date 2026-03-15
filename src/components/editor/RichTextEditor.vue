@@ -1,27 +1,44 @@
 <script setup lang="ts">
+import E from 'wangeditor'
+import {onMounted, ref} from "vue";
 
-import {Editor, Toolbar} from "@wangeditor/editor-for-vue";
-import {ref, shallowRef} from "vue";
+const editorRef = ref<E>()
 
-const editorRef = shallowRef()
-const editorMode = ref<string>('default')
-const editorValue = ref<string>('')
+onMounted(() => {
+  initEditor()
+})
 
-function handleEditorCreated(editor: Editor) {
+defineExpose({
+  setHtml,
+  getHtml
+})
+
+function initEditor() {
+  const editor = new E('#richTextEditor')
+  editor.config.pasteFilterStyle = false
+  editor.config.placeholder = '请输入内容...'
+  editor.create()
   editorRef.value = editor
+}
+
+function setHtml(htmlValue: string): void {
+  if (editorRef.value) {
+    editorRef.value.txt.html(htmlValue)
+  }
+}
+
+function getHtml(): string {
+  if (editorRef.value) {
+    return editorRef.value.txt.html()
+  }
+  return ''
 }
 </script>
 
 <template>
-  <div id="content-editor" class="editor_border">
-    <Toolbar class="editor_border" :editor="editorRef" :mode="editorMode"></Toolbar>
-    <Editor v-model="editorValue" :mode="editorMode" @onCreated="handleEditorCreated"></Editor>
-  </div>
+  <div id="richTextEditor"></div>
 </template>
 
 <style scoped>
-.editor_border {
-  border: 1px solid #ccc;
-}
 
 </style>

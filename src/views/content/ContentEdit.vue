@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, onUpdated, ref} from "vue";
 import {ContentItem} from "../../type/ContentItem.ts";
-import {getContentById} from "../../api/content.ts";
+import {getContentById, saveOrUpdateContent} from "../../api/content.ts";
 import {useRoute} from "vue-router";
 import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 import EditForm from "../../components/common/EditForm.vue";
 import {EditFormConfig, EditFormItem, SubmitConfig} from "../../type/common/EditFormConfig.ts";
-import '@wangeditor/editor/dist/css/style.css'
 import RichTextEditor from "../../components/editor/RichTextEditor.vue";
+import {ElMessage} from "element-plus";
+import router from "../../router";
 
 const route = useRoute()
 const contentEditFormConfig = ref<EditFormConfig>()
+const contentEditorRef = ref<InstanceType<typeof RichTextEditor>>()
 
 onMounted(() => {
   let contentId: number = Number(route.params.contentId)
   if (contentId) {
     getContentById(contentId).then(res => {
       contentEditFormConfig.value = defineContentEditFormConfig(res.data)
-      editorValue.value = res.data.html
+      contentEditorRef.value?.setHtml(res.data.html)
     })
   } else {
     contentEditFormConfig.value = defineContentEditFormConfig(new ContentItem())
@@ -38,12 +40,16 @@ function defineContentEditFormConfig(formValue: ContentItem): EditFormConfig {
   ]
   formConfig.openValidate()
   formConfig.wrapperWidthPercent = 30
-  formConfig.addAfterSlotTemplate('status')
+  formConfig.addAfterSlotTemplate('contentEditor')
   return formConfig;
 }
 
 function submitContentForm(formValue: ContentItem) {
-
+  formValue.html = contentEditorRef.value?.getHtml() || ''
+  saveOrUpdateContent(formValue).then(() => {
+    ElMessage.success('保存成功')
+    router.push({name: 'ContentList'})
+  }).catch(error => ElMessage.error(error))
 }
 
 
@@ -52,8 +58,11 @@ function submitContentForm(formValue: ContentItem) {
 
 <template>
 <SubComponentTitle/>
-  <EditForm :editFormConfig="contentEditFormConfig"></EditForm>
-  <RichTextEditor/>
+  <EditForm :editFormConfig="contentEditFormConfig">
+    <template #contentEditor>
+    </template>
+  </EditForm>
+  <RichTextEditor ref="contentEditorRef"/>
 </template>
 
 <style scoped>
