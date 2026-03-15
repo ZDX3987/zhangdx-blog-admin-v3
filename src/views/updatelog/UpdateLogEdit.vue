@@ -6,8 +6,8 @@ import {UpdateLog} from "../../type/UpdateLog.ts";
 import {updateLogStatus} from "../../type/common/commonStatusConst.ts";
 import "vditor/dist/index.css";
 import {getUpdateLogById, saveUpdateLog} from "../../api/updateLogApi.ts";
-import {ElMessage, type FormInstance} from "element-plus";
-import MarkdownContent from "../../components/editor/MarkdownContent.vue";
+import {ElMessage} from "element-plus";
+import MarkdownEditor from "../../components/editor/MarkdownEditor.vue";
 import {EditFormConfig, EditFormItem, FormOption, SubmitConfig} from "../../type/common/EditFormConfig.ts";
 import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
 import EditForm from "../../components/common/EditForm.vue";
@@ -15,7 +15,7 @@ import EditForm from "../../components/common/EditForm.vue";
 const route = useRoute()
 const router = useRouter()
 const updateLogForm = ref<UpdateLog>(new UpdateLog())
-const markdownContentRef = ref<InstanceType<typeof MarkdownContent>>()
+const markdownContentRef = ref<InstanceType<typeof MarkdownEditor>>()
 const updateLogEditFormConfig = ref<EditFormConfig>()
 
 onMounted(() => {
@@ -43,6 +43,7 @@ function defineUpdateLogEditFormConfig(formValue: UpdateLog): EditFormConfig {
   formConfig.resettable = true
   formConfig.openValidate()
   formConfig.wrapperWidthPercent = 30
+  formConfig.addAfterSlotTemplate('contentEditor')
   return formConfig
 }
 
@@ -63,11 +64,17 @@ function doSave(formValue: UpdateLog) {
 <template>
 <div class="update_log_edit_content">
   <SubComponentTitle/>
-  <EditForm :editFormConfig="updateLogEditFormConfig"></EditForm>
-  <MarkdownContent :markdownText="updateLogForm.content" :contentKey="updateLogForm.id" ref="markdownContentRef" :contentUploadUrl="'/api/article/article/upload'"/>
+  <EditForm :editFormConfig="updateLogEditFormConfig">
+    <template #contentEditor="{formValue}">
+      <MarkdownEditor class="markdown-editor-content" :contentText="formValue.content" :contentKey="updateLogForm.id" ref="markdownContentRef" :contentUploadUrl="'/api/article/article/upload'"/>
+    </template>
+  </EditForm>
 
 </div>
 </template>
 
 <style scoped>
+.markdown-editor-content {
+  margin-bottom: 20px;
+}
 </style>

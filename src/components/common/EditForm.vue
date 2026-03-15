@@ -78,7 +78,7 @@ function resetForm() {
         <el-tree-select v-else-if="formItem.isTreeSelect()" v-model="realFormValue[formItem.model]"
                         :data="formItem.data"></el-tree-select>
       </el-form-item>
-      <slot v-if="editFormConfig?.afterSlotTemplate" :name="editFormConfig.afterSlotTemplate.default"/>
+      <slot v-if="editFormConfig?.afterSlotTemplate" :name="editFormConfig.afterSlotTemplate.default" :formValue="realFormValue"/>
       <el-form-item>
         <el-button v-if="editFormConfig?.submitConfig" :type="editFormConfig?.submitConfig.type" @click="submitForm">
           {{ editFormConfig?.submitConfig.btnText }}

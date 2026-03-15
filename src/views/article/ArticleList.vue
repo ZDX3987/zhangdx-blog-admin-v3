@@ -147,7 +147,7 @@ function submitQueryForm() {
       <span v-else>/</span>
     </template>
     <template #source="scope">
-      <el-tag  :type="articleSourceEnum[scope.row.source].color" round effect="plain">{{articleSourceEnum[scope.row.source].name}}</el-tag>
+      <el-tag :type="articleSourceEnum[scope.row.source].color" round effect="plain">{{articleSourceEnum[scope.row.source].name}}</el-tag>
     </template>
   </ListTable>
 </div>

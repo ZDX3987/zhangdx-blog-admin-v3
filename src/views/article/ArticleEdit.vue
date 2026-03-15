@@ -8,11 +8,13 @@ import {doSaveArticle, doSaveDraftArticle, getArticleById} from "../../api/artic
 import {ArticleExtraData, ArticleItem, PreviewConfig} from "../../type/ArticleItem.ts";
 import CategorySelectDialog from "../../components/dialog/CategorySelectDialog.vue";
 import type {CategoryItem} from "../../type/CategoryItem.ts";
-import MarkdownContent from "../../components/editor/MarkdownContent.vue";
+import MarkdownEditor from "../../components/editor/MarkdownEditor.vue";
 import {ElMessage, type UploadFile} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
 import router from "../../router";
 import SubComponentTitle from "../../components/common/SubComponentTitle.vue";
+import RichTextEditor from "../../components/editor/RichTextEditor.vue";
+import {EditorTextType} from "../../type/common/editor-text-type.ts";
 
 const route = useRoute()
 const articleEditFormConfig = ref<EditFormConfig>()
@@ -20,8 +22,9 @@ const articleId = ref<number>()
 const articleInfo = ref<ArticleItem>(new ArticleItem())
 const categorySelectDialogRef = ref<InstanceType<typeof CategorySelectDialog>>()
 const coverImgFileList = ref<UploadFile[]>([])
-const editorName = ref<string>('markdown')
-const markdownContentRef = ref<InstanceType<typeof MarkdownContent>>()
+const editorName = ref<string>(EditorTextType.MARKDOWN)
+const markdownContentRef = ref<InstanceType<typeof MarkdownEditor>>()
+const richTextContentRef = ref<InstanceType<typeof RichTextEditor>>()
 
 onMounted(() => {
   articleId.value = Number(route.params.articleId)
@@ -32,6 +35,7 @@ onMounted(() => {
       if (articleInfo.value.coverImg) {
         coverImgFileList.value.push({name: undefined, status: undefined, uid: undefined, url: articleInfo.value.coverImg})
       }
+      editorName.value = articleInfo.value.source === 1 ? EditorTextType.RICH_TEXT : EditorTextType.MARKDOWN
     })
   } else {
     articleEditFormConfig.value = defineArticleEditConfig(articleInfo.value)
@@ -150,11 +154,14 @@ function selectUploadImg(uploadFile: UploadFile) {
       </el-col>
     </el-row>
     <el-tabs class="article-editor-tabs" v-model="editorName">
-      <el-tab-pane label="Markdown编辑器" name="markdown">
-        <MarkdownContent :markdownText="articleInfo.text" :contentKey="articleInfo.id" :contentUploadUrl="'/api/article/article/upload'"
+      <el-tab-pane label="Markdown编辑器" :name="EditorTextType.MARKDOWN" v-if="!articleInfo.source || articleInfo.source === 2">
+        <MarkdownEditor :contentText="articleInfo.text" :contentKey="articleInfo.id" :contentUploadUrl="'/api/article/article/upload'"
                          ref="markdownContentRef" @editorInsert="editorInsert"/>
       </el-tab-pane>
-      <el-tab-pane label="富文本编辑器" name="richText"></el-tab-pane>
+      <el-tab-pane label="富文本编辑器" :name="EditorTextType.RICH_TEXT" v-if="!articleInfo.source || articleInfo.source === 1">
+        <RichTextEditor :contentText="articleInfo.text" :contentKey="articleInfo.id" :contentUploadUrl="'/api/article/article/upload'"
+                        ref="richTextContentRef" @editorInsert="editorInsert"></RichTextEditor>
+      </el-tab-pane>
     </el-tabs>
   </div>
   <CategorySelectDialog ref="categorySelectDialogRef" @selectSingleCategory="selectSingleCategory"/>

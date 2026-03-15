@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUpdated, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {ContentItem} from "../../type/ContentItem.ts";
 import {getContentById, saveOrUpdateContent} from "../../api/content.ts";
 import {useRoute} from "vue-router";
@@ -13,16 +13,18 @@ import router from "../../router";
 const route = useRoute()
 const contentEditFormConfig = ref<EditFormConfig>()
 const contentEditorRef = ref<InstanceType<typeof RichTextEditor>>()
+const contentItem = ref<ContentItem>()
 
 onMounted(() => {
   let contentId: number = Number(route.params.contentId)
   if (contentId) {
     getContentById(contentId).then(res => {
       contentEditFormConfig.value = defineContentEditFormConfig(res.data)
-      contentEditorRef.value?.setHtml(res.data.html)
+      contentItem.value = res.data
     })
   } else {
-    contentEditFormConfig.value = defineContentEditFormConfig(new ContentItem())
+    contentItem.value = new ContentItem()
+    contentEditFormConfig.value = defineContentEditFormConfig(contentItem.value)
   }
 })
 
@@ -45,7 +47,10 @@ function defineContentEditFormConfig(formValue: ContentItem): EditFormConfig {
 }
 
 function submitContentForm(formValue: ContentItem) {
-  formValue.html = contentEditorRef.value?.getHtml() || ''
+  if (!contentEditorRef.value) {
+    return
+  }
+  formValue.html = contentEditorRef.value.getHtml() || ''
   saveOrUpdateContent(formValue).then(() => {
     ElMessage.success('保存成功')
     router.push({name: 'ContentList'})
@@ -59,11 +64,14 @@ function submitContentForm(formValue: ContentItem) {
 <template>
 <SubComponentTitle/>
   <EditForm :editFormConfig="contentEditFormConfig">
-    <template #contentEditor>
+    <template #contentEditor="{formValue}">
+      <RichTextEditor class="rich-text-editor-content" ref="contentEditorRef" :contentText="formValue.html"/>
     </template>
   </EditForm>
-  <RichTextEditor ref="contentEditorRef"/>
 </template>
 
 <style scoped>
+.rich-text-editor-content {
+  margin-bottom: 20px;
+}
 </style>

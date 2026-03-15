@@ -4,13 +4,25 @@ import "vditor/dist/index.css"
 import {onMounted, ref, watch} from "vue";
 import {formatUploadResponse, getTextFromHtml, handleCustomUpload} from "../../utils/vditor-util.ts";
 import {type VditorPreview} from "../../type/ArticleItem.ts";
-import type {MarkdownEditorProp} from "../../type/common/markdown-editor-prop.ts";
 
 const mdEditor = ref<Vditor>()
-const props = defineProps<MarkdownEditorProp>()
+const props = defineProps({
+  contentText: {
+    type: String,
+    default: ''
+  },
+  contentKey:  {
+    type: Number,
+    default: 0
+  },
+  contentUploadUrl:  {
+    type: String,
+    default: ''
+  }
+})
 const emit = defineEmits(['editorInsert'])
 
-watch(() => props.markdownText, (newValue) => {
+watch(() => props.contentText, (newValue) => {
   mdEditor.value?.setValue(newValue)
 })
 
@@ -51,6 +63,9 @@ function initEditor(): Vditor {
       format(files: File[], responseText: string): string {
         return formatUploadResponse(files, responseText)
       }
+    },
+    after() {
+      mdEditor.value?.setValue(props.contentText)
     }
   })
 }
