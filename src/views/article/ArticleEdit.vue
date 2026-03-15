@@ -49,7 +49,7 @@ function defineArticleEditConfig(formValue: ArticleItem): EditFormConfig {
   ]
   formConfig.resettable = false
   formConfig.openValidate()
-  return formConfig;
+  return formConfig
 }
 
 function showCategoryDialog() {
@@ -151,7 +151,8 @@ function selectUploadImg(uploadFile: UploadFile) {
     </el-row>
     <el-tabs class="article-editor-tabs" v-model="editorName">
       <el-tab-pane label="Markdown编辑器" name="markdown">
-        <MarkdownContent :articleEditInfo="articleInfo" ref="markdownContentRef" @editorInsert="editorInsert"/>
+        <MarkdownContent :markdownText="articleInfo.text" :contentKey="articleInfo.id"
+                         ref="markdownContentRef" @editorInsert="editorInsert"/>
       </el-tab-pane>
       <el-tab-pane label="富文本编辑器" name="richText"></el-tab-pane>
     </el-tabs>

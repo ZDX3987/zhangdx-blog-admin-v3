@@ -3,16 +3,22 @@ import Vditor from 'vditor'
 import "vditor/dist/index.css"
 import {onMounted, ref, watch} from "vue";
 import {formatUploadResponse, getTextFromHtml, handleCustomUpload} from "../../utils/vditor-util.ts";
-import {ArticleItem, type VditorPreview} from "../../type/ArticleItem.ts";
+import {type VditorPreview} from "../../type/ArticleItem.ts";
 
 const mdEditor = ref<Vditor>()
 const props = defineProps({
-  articleEditInfo: ArticleItem
+  markdownText: {
+    type: String,
+    default: ''
+  },
+  contentKey: {
+    type: Number
+  }
 })
 const emit = defineEmits(['editorInsert'])
 
-watch(() => props.articleEditInfo, (newValue) => {
-  mdEditor.value?.setValue(newValue.text)
+watch(() => props.markdownText, (newValue) => {
+  mdEditor.value?.setValue(newValue)
 })
 
 onMounted(() => {
@@ -22,7 +28,8 @@ onMounted(() => {
 defineExpose({
   getEditorValue,
   getEditorText,
-  genEditorPreviewConfig
+  genEditorPreviewConfig,
+  clearEditorText
 })
 
 function initEditor(): Vditor {
@@ -33,7 +40,7 @@ function initEditor(): Vditor {
     cache: {enable: false},
     mode: 'sv',
     blur(value: string) {
-      if (value === '\n' || props.articleEditInfo?.id) {
+      if (value === '\n' || props.contentKey) {
         return;
       }
       emit('editorInsert', (text: string) => mdEditor.value?.setValue(text, true))
@@ -41,11 +48,11 @@ function initEditor(): Vditor {
     upload: {
       url: '/api/article/article/upload',
       handler(files: File[]): string | Promise<string> | Promise<null> | null {
-        const articleId: number = props.articleEditInfo?.id
-        if (articleId) {
-          handleCustomUpload(articleId, files, mdEditor.value)
+        const contentKey: number = props.contentKey
+        if (contentKey) {
+          handleCustomUpload(contentKey, files, mdEditor.value)
         } else {
-          emit('editorInsert', () => handleCustomUpload(articleId, files, mdEditor.value))
+          emit('editorInsert', () => handleCustomUpload(contentKey, files, mdEditor.value))
         }
       },
       format(files: File[], responseText: string): string {
@@ -60,6 +67,12 @@ function getEditorValue(): string {
 }
 function getEditorText(): string {
   return getTextFromHtml(mdEditor.value?.getHTML() || '')
+}
+
+function clearEditorText(): any {
+  if (mdEditor.value) {
+    mdEditor.value.deleteValue()
+  }
 }
 
 function genEditorPreviewConfig(): VditorPreview | undefined {

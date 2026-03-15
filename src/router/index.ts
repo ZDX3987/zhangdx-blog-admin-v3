@@ -189,7 +189,7 @@ const routes = [
                 name: 'UpdateLogManage',
                 component: () => import('../views/updatelog/UpdateLogManage.vue'),
                 meta: {title: '更新日志'},
-                redirect: {name: 'ContentList'},
+                redirect: {name: 'UpdateLogList'},
                 children: [
                     {
                         path: 'list',
