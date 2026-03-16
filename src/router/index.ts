@@ -16,9 +16,7 @@ const oauthRoute = {
     path: '/receive_token',
     name: 'ReceiveToken',
     component: () => import('../views/ReceiveToken.vue'),
-    meta: {
-        title: '授权登录'
-    }
+    meta: {title: '授权登录', withoutPermissionCheck: true}
 }
 
 const routes = [
