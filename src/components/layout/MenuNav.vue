@@ -5,7 +5,6 @@ import {MenuItem} from "../../type/MenuItem.ts";
 import {getAdminMenu} from "../../api/menuApi.ts";
 import {genData} from "../../utils/api-util.ts";
 
-const title = 'ZHANGDX'
 const menuList = reactive<MenuItem[]>([])
 
 const props = defineProps({
@@ -24,8 +23,7 @@ function initAdminMenu() {
 </script>
 
 <template>
-  <el-scrollbar wrapClass="scrollbar-wrapper" class="bg_color">
-    <h4 class="nav_title">{{ isCollapse ? title.slice(0, 1) : title }}</h4>
+  <el-scrollbar>
     <el-menu :collapse="isCollapse"
              background-color="#304156"
              text-color="#bfcbd9"
@@ -55,17 +53,7 @@ function initAdminMenu() {
 </template>
 
 <style scoped>
-.bg_color {
-  background-color: #304156;
-  height: 100vh;
-}
-.nav_title {
-  margin: 0;
-  height: 50px;
-  line-height: 50px;
-  color: #fff;
-  text-align: center;
-}
+
 .menu_list {
   text-align: left;
   min-height: 100%;

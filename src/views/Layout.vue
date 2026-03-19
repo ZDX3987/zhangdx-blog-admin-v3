@@ -8,6 +8,7 @@ import {AuthUserInfo} from "../type/AuthUserInfo.ts";
 import {useMainStore} from "../pinia";
 import MenuNav from "../components/layout/MenuNav.vue";
 import {useRoute} from "vue-router";
+import AsideBar from "../components/layout/AsideBar.vue";
 
 const menuCollapse = ref(false)
 const authUsername = ref<string>('');
@@ -45,8 +46,9 @@ function getAuthUserInfo() {
   <el-watermark :content="authUsername" :gap="watermarkConfig.gap" :rotate="watermarkConfig.rotate"
                 :z-index="watermarkConfig.zIndex" :font="watermarkConfig.font">
     <el-container>
-      <MenuNav :is-collapse="menuCollapse"/>
-      <el-container>
+<!--      <MenuNav :is-collapse="menuCollapse"/>-->
+      <AsideBar :isCollapse="menuCollapse"/>
+      <el-container class="layout-sub-container">
         <el-header>
           <HeaderBar @collapse-menu="toggleMenuCollapse"/>
         </el-header>
@@ -64,13 +66,19 @@ function getAuthUserInfo() {
 .layout_content {
   background-color: rgb(239,241,244);
 }
+.layout-sub-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 .el-header {
   padding: 0;
+  flex-shrink: 0;
 }
 .el-main {
   padding: 0;
   margin: 0 10px 10px 10px;
-  height: 90vh;
+  flex: 1;
 }
 .main-content-common-bg {
   background-color: #FFF;
